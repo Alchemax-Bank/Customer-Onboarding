@@ -1,2 +1,2 @@
-# Customer-Onboarding
-A service to get customer on board to our bank.
+# Room Rental App
+An app to get customer on board to our platform.
