@@ -1,7 +1,7 @@
 import 'package:Nirvana/Screens/LandingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:Nirvana/Screens/HomeScreen.dart';
+import 'package:Nirvana/Screens/Home.dart';
 
 void main() async {
   runApp(Main());
@@ -41,7 +41,7 @@ class _NirvanaState extends State<Nirvana> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: login ? LandingScreen() : HomeScreen(),
+      home: login ? LandingScreen() : Home(),
     );
   }
 }

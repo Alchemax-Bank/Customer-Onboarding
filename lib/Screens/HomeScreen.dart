@@ -1,5 +1,6 @@
 import 'package:Nirvana/Widget/Cards.dart';
 import 'package:Nirvana/constants.dart';
+import 'package:Nirvana/Screens/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -21,15 +22,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   
   void initialise() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    this.firstName = prefs.getString('firstName');
+    
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(),
+      drawer: NavigationDrawer(),
       body: SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
         child: Stack(
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     title: Text(
-                      "Hey " + this.firstName + "!",
+                      "Nirvana",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 18,

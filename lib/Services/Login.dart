@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:Nirvana/Screens/HomeScreen.dart';
+import 'package:Nirvana/Screens/Home.dart';
+import 'package:Nirvana/Screens/LoginScreen.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,6 +101,12 @@ class LoginFunctions{
     }
     return errorMessage;
   }
+
+  signOut()  async{
+    await _auth.signOut();
+    return new LoginScreen();
+  }
+
   onVerify(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     
@@ -131,7 +138,7 @@ class LoginFunctions{
     bool status = true;
     if (status == true){
       await prefs.setBool('login', true);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
     }
   }
 }
