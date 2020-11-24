@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/Screens/LoginScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -10,6 +11,10 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  String firstName;
+  String lastName;
+  String mobileNo;
+    
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,6 +98,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         EdgeInsets.symmetric(horizontal: 17, vertical: 12),
                                     hintText: "Enter your first name",
                                   ),
+                                  onChanged: (value) async{
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    await prefs.setString('firstName', value);
+                                  },
                                 ),
                               ),
                             ),
@@ -137,6 +146,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         EdgeInsets.symmetric(horizontal: 17, vertical: 12),
                                     hintText: "Enter your last name",
                                   ),
+                                  onChanged: (value) async{
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    await prefs.setString('lastName', value);
+                                  },
                                 ),
                               ),
                             ),
@@ -185,6 +198,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         EdgeInsets.symmetric(horizontal: 17, vertical: 12),
                                     hintText: "Enter your 10-digit mobile number",
                                   ),
+                                  onChanged: (value) {
+                                    this.mobileNo = value;
+                                  },
                                 ),
                               ),
                             ),
@@ -205,7 +221,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 context,
                                 PageTransition(
                                     type: PageTransitionType.leftToRightWithFade,
-                                    child: OTPScreen()));
+                                    child: OTPScreen(mobileNo: this.mobileNo, mode: "Register")));
                           },
                           color: primaryColor,
                           child: RichText(

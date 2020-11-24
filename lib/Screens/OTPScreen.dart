@@ -1,15 +1,59 @@
+import 'package:Nirvana/Services/Login.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:Nirvana/constants.dart';
-import 'package:Nirvana/Screens/HomeScreen.dart';
-import 'package:Nirvana/Screens/RegisterScreen.dart';
+import 'package:quiver/async.dart';
 
 class OTPScreen extends StatefulWidget {
+  OTPScreen({@required this.mobileNo, this.mode});
+  final String mobileNo;
+  final String mode;
   @override
-  _OTPScreenState createState() => _OTPScreenState();
+  _OTPScreenState createState() => _OTPScreenState(mobileNo, mode);
 }
 
 class _OTPScreenState extends State<OTPScreen> {
+  String smsOTP;
+  String mobileno;
+  String errorMessage = '';
+  LoginFunctions loginFunctions = new LoginFunctions();
+  int _start = 30;
+  int _current = 30;
+  String mode;
+
+  _OTPScreenState(String mobileno, String mode){
+    this.mobileno = "+91" + mobileno;
+    this.mode = mode;
+  }
+    
+  @override
+  void initState() {
+    super.initState();
+    initialise();
+    startTimer();
+  }
+  
+  void initialise() async {
+    await loginFunctions.verifyPhone(mobileno,context);
+  }
+
+  void startTimer() {
+    CountdownTimer countDownTimer = new CountdownTimer(
+      new Duration(seconds: _start),
+      new Duration(seconds: 1),
+    );
+
+    var sub = countDownTimer.listen(null);
+    sub.onData((duration) {
+      setState(() {
+        _current = _start - duration.elapsed.inSeconds;
+      });
+    });
+
+    sub.onDone(() {
+      sub.cancel();
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -51,10 +95,10 @@ class _OTPScreenState extends State<OTPScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                       child: Text(
-                        "OTP sent to number",
+                        "OTP sent to +91 " + this.mobileno,
                         style: TextStyle(
                             color: primaryColor,
-                            fontSize: 30,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -91,10 +135,14 @@ class _OTPScreenState extends State<OTPScreen> {
 
                               hintText: "Enter the OTP send to your number",
                             ),
+                            onChanged: (value) {
+                                  this.smsOTP = value;
+                            },
                           ),
                         ),
                       ],
                     ),
+                    (errorMessage != '' ? Text(errorMessage, style: TextStyle(color: Colors.red)) : Container()),
                     Center(
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -104,11 +152,7 @@ class _OTPScreenState extends State<OTPScreen> {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
                           onPressed: () {
-                            Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                    type: PageTransitionType.rightToLeftWithFade,
-                                    child: HomeScreen()));
+                            loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode);
                           },
                           color: primaryColor,
                           child: RichText(
@@ -125,34 +169,34 @@ class _OTPScreenState extends State<OTPScreen> {
                         ),
                       ),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "By Sign up, you agree our ",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 12, fontStyle: FontStyle.italic),
+                        ),
+                        FlatButton(
+                          padding: EdgeInsets.only(left: 5),
+                          onPressed: () {},
+                          child: Text(
+                            "Terms and Condition",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontStyle: FontStyle.italic,
+                                color: primaryColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "By Sign up, you agree our ",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 12, fontStyle: FontStyle.italic),
-                    ),
-                    FlatButton(
-                      padding: EdgeInsets.only(left: 5),
-                      onPressed: () {},
-                      child: Text(
-                        "Terms and Condition",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontStyle: FontStyle.italic,
-                            color: primaryColor,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
               Positioned.fill(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -160,7 +204,16 @@ class _OTPScreenState extends State<OTPScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       Divider(),
-                      Row(
+                       _current !=0  ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("You will get an OTP by SMS in "),
+                          Text("$_current", style: TextStyle(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold),
+                              )
+                        ]
+                      ) : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
@@ -168,14 +221,10 @@ class _OTPScreenState extends State<OTPScreen> {
                           FlatButton(
                             padding: EdgeInsets.only(right: 20),
                             onPressed: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  PageTransition(
-                                      type: PageTransitionType.leftToRightWithFade,
-                                      child: OTPScreen()));
+                              initState();
                             },
                             child: Text(
-                              "Resend in 30s ",
+                              "Resend in $_start",
                               style: TextStyle(
                                   color: primaryColor,
                                   fontWeight: FontWeight.bold),

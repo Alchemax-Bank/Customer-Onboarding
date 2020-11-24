@@ -21,3 +21,4 @@ const MaterialColor primaryColor = const MaterialColor(
 const white = Colors.white;
 const grey = Colors.grey;
 const darkGrey = Color(0xffE7EBED);
+final server = "";

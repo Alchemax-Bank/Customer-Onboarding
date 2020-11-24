@@ -4,7 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:Nirvana/Screens/LoginScreen.dart';
 import 'package:Nirvana/Screens/RegisterScreen.dart';
 
-import '../constants.dart';
+import 'package:Nirvana/constants.dart';
 
 class LandingScreen extends StatefulWidget {
   @override

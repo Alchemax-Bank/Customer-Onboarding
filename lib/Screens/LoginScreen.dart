@@ -10,6 +10,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String mobileNo;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -17,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
     double abovePadding = MediaQuery.of(context).padding.top +
         MediaQuery.of(context).padding.bottom +
         30;
-    print(abovePadding);
+    //print(abovePadding);
     double leftHeight = screenHeight - abovePadding;
     return Scaffold(
         backgroundColor: white,
@@ -88,9 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               fillColor: darkGrey,
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 17, vertical: 12),
-
                               hintText: "Enter 10-digit mobile number",
                             ),
+                            onChanged: (value) {
+                                  this.mobileNo = value;
+                            },
                           ),
                         ),
                       ],
@@ -108,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 context,
                                 PageTransition(
                                     type: PageTransitionType.rightToLeftWithFade,
-                                    child: OTPScreen()));
+                                    child: OTPScreen(mobileNo: this.mobileNo, mode: "Login")));
                           },
                           color: primaryColor,
                           child: RichText(
