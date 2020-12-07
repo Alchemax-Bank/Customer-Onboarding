@@ -22,6 +22,9 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
         // physics: BouncingScrollPhysics(),
         child: Stack(
           children: <Widget>[
+            AppBar(
+              backgroundColor: primaryColor,
+            ),
             ClipPath(
               clipper: OvalBottomBorderClipper(),
               child: Container(
