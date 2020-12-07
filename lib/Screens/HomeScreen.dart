@@ -4,7 +4,6 @@ import 'package:Nirvana/Screens/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -70,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(right: 8),
                       child: IconButton(
                         icon: new Icon(
-                          Icons.shopping_basket,
+                          Icons.notifications,
                           size: 24,
                           color: white,
                         ),

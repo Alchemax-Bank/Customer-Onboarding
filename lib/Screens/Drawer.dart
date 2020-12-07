@@ -1,3 +1,6 @@
+import 'package:Nirvana/Screens/GharScreen.dart';
+import 'package:Nirvana/Screens/SearchScreen.dart';
+import 'package:Nirvana/Screens/SettingScreen.dart';
 import 'package:Nirvana/Services/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:Nirvana/constants.dart';
@@ -38,17 +41,17 @@ class NavigationDrawer extends StatelessWidget {
                 context,
                 PageTransition(
                     type: PageTransitionType.leftToRightWithFade,
-                    child: Home())),
+                    child: Home(index: 0))),
          ),
          createDrawerBodyItem(
-           icon: Icons.account_circle_outlined,
-           title: 'Profile',
+           icon: Icons.settings,
+           title: 'Settings',
            onTap: () =>
                Navigator.pushReplacement(
                 context,
                 PageTransition(
                     type: PageTransitionType.leftToRightWithFade,
-                    child: Home())),
+                    child: Home(index: 3))),
          ),
          createDrawerBodyItem(
            icon: Icons.search,
@@ -58,7 +61,7 @@ class NavigationDrawer extends StatelessWidget {
                 context,
                 PageTransition(
                     type: PageTransitionType.leftToRightWithFade,
-                    child: Home())),
+                    child: Home(index: 1))),
          ),
          Divider(),
          createDrawerBodyItem(
@@ -69,7 +72,7 @@ class NavigationDrawer extends StatelessWidget {
                 context,
                 PageTransition(
                     type: PageTransitionType.leftToRightWithFade,
-                    child: Home())),
+                    child: Home(index: 2))),
          ),
          ListTile(
            title: Text('App version 1.0.0'),

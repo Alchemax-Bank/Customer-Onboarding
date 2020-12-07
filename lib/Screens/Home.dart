@@ -1,9 +1,14 @@
 import 'package:Nirvana/Screens/Drawer.dart';
+import 'package:Nirvana/Screens/GharScreen.dart';
 import 'package:Nirvana/Screens/HomeScreen.dart';
+import 'package:Nirvana/Screens/SearchScreen.dart';
+import 'package:Nirvana/Screens/SettingScreen.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
+  final int index;
+  Home({this.index});
   @override
   _HomeState createState() => _HomeState();
 }
@@ -17,14 +22,15 @@ class _HomeState extends State<Home> {
     super.initState();
     initialise();
   }
-  
+
+  int _selectedIndex =0;
   void initialise() async {
-    
+    _selectedIndex = widget.index;  
   }
-  int _selectedIndex = 0;
+  
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black);
-  List<Widget> _widgetOptions = [HomeScreen(),HomeScreen(),HomeScreen(),HomeScreen()];
+  List<Widget> _widgetOptions = [HomeScreen(), SearchScreen(), GharScreen(), SettingScreen()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -38,7 +44,7 @@ class _HomeState extends State<Home> {
       key: _scaffoldKey,
       drawer: NavigationDrawer(),
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child:  _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
