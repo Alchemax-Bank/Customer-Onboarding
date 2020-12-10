@@ -3,7 +3,12 @@ import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/Screens/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:location/location.dart';
+import 'package:geocoding/geocoding.dart' as Coding;
+import 'package:Nirvana/Services/propertyList.dart';
+import 'package:Nirvana/models/Property.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,16 +17,55 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String firstName;
-  
+
+  Location location = new Location();
+  List<Coding.Placemark> placemarks;
+  String address;
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
+  List<Property> property;
+  Map<String, double> origin;
+
   @override
   void initState() {
     super.initState();
-    initialise();
+    currentLoc();
   }
   
-  void initialise() async {
-    
+  void popularProperties() async {
+    List<Property> tmp = await getPopularProperties(origin);
+    setState(() {
+      property = tmp;
+    });
+  }
+  currentLoc() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+    _locationData = await location.getLocation();
+    Map<String, double> temp = {
+      'latitude' : _locationData.latitude,
+      'longitude' : _locationData.longitude
+    };
+    placemarks = await Coding.placemarkFromCoordinates(_locationData.latitude, _locationData.longitude);
+    setState(() {
+      origin = temp;
+      address = placemarks[0].name + ', ' +placemarks[0].subLocality + ', ' +placemarks[0].locality;
+    });
+    popularProperties();
   }
 
   @override
@@ -29,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavigationDrawer(),
-      body: SingleChildScrollView(
+      body: address != null ? SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
         child: Stack(
           children: <Widget>[
@@ -82,11 +126,11 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 260,
               color: Colors.transparent,
               margin: EdgeInsets.only(top: 90),
-              child: Swiper(
+              child: property != null ? Swiper(
                 itemWidth: 340,
                 itemHeight: 400,
                 itemBuilder: (BuildContext context, int index) {
-                  return PropertyCard();
+                  return PropertyCard(property: property[index],);
                 },
                 itemCount: 10,
                 viewportFraction: 0.75,
@@ -95,7 +139,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: DotSwiperPaginationBuilder(color: grey)),
                 scale: 0.8,
                 layout: SwiperLayout.DEFAULT,
-              ),
+              ) : SpinKitWave(
+                color: primaryColor,
+                size: 50.0,
+              )
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -111,36 +158,47 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        "Most Popular",
+                        "Most Popular \nNear",
                         style: TextStyle(
-                            height: 2,
                             fontSize: 17,
                             color: primaryColor,
                             fontWeight: FontWeight.bold),
                       ),
-                      Text("View more",
-                          style: TextStyle(
-                              height: 2,
-                              fontSize: 15,
-                              color: primaryColor,
-                              fontWeight: FontWeight.bold))
+                      Icon(
+                        Icons.location_on_outlined,
+                        color: primaryColor,
+                      ),
+                      Text(
+                        this.address,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: primaryColor),
+                      )
                     ],
                   ),
-                  Container(
+                  property != null ? Container(
                       height: 330,
                       child: ListView.builder(
                         physics: BouncingScrollPhysics(),
-                        itemCount: 10,
+                        itemCount: property.length,
                         itemBuilder: (context, i) {
-                          return PropertyCard1();
+                          return PropertyCard1(property: property[i]);
                         },
-                      )),
+                      )) : Container(
+                        height: 300,
+                        child: SpinKitWave(
+                          color: primaryColor,
+                          size: 30)
+                        ),
                 ],
               ),
             )
           ],
         ),
-      ),
+      ) : SpinKitDoubleBounce(
+            color: primaryColor,
+            size: 50.0,
+          ),
     );
   }
 }

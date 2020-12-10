@@ -1,3 +1,69 @@
+import 'dart:core';
+
+class Property{
+  var index;
+  var name;
+  var bhk;
+  var type;
+  var floor;
+  var description;
+  var latitude;
+  var longitude;
+  var location;
+  var city;
+  var pincode;
+  var state;
+  var country;
+  var numberOfRooms;
+  var landlord_id;
+  var landmark_id;
+  var price;
+  var area_in_sqft;
+  var status;
+  var deposit;
+  var bathrooms;
+  var facing;
+  var photos_urls;
+  var rating;
+  var remarks;
+  var is_verified;
+  var is_accquired;
+  var created_at; 
+  var updated_at;
+
+  Property({
+    this.index,
+    this.name,
+    this.bhk,
+    this.type,
+    this.floor,
+    this.description,
+    this.latitude,
+    this.longitude,
+    this.location,
+    this.city,
+    this.pincode,
+    this.state,
+    this.country,
+    this.numberOfRooms,
+    this.landlord_id,
+    this.landmark_id,
+    this.price,
+    this.area_in_sqft,
+    this.status,
+    this.deposit,
+    this.bathrooms,
+    this.facing,
+    this.photos_urls,
+    this.rating,
+    this.remarks,
+    this.is_verified,
+    this.is_accquired,
+    this.created_at,
+    this.updated_at
+});
+}
+
 class PropertyDetail {
   final String image;
   final String title;
@@ -5,6 +71,7 @@ class PropertyDetail {
 
   PropertyDetail({this.image, this.title, this.description});
 }
+
 List<PropertyDetail> propertyDetails = [
   PropertyDetail(
       image: "assets/images/master_bedroom.jpg",

@@ -7,16 +7,18 @@ import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
 
 class PropertyDetailScreen extends StatefulWidget {
-  final List<PropertyDetail> propertyDetail;
+  final Property propertyDetail;
   PropertyDetailScreen({this.propertyDetail});
   @override
   _PropertyDetailScreenState createState() => _PropertyDetailScreenState();
 }
 
 class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
+  List<PropertyDetail> propertyImages = propertyDetails;
+  
   @override
   Widget build(BuildContext context) {
-    print(widget.propertyDetail.length);
+    print(widget.propertyDetail);
     return Scaffold(
       body: SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
@@ -75,12 +77,12 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 itemWidth: 360,
                 itemHeight: 420,
                 index: 1,
-                itemCount: widget.propertyDetail.length,
+                itemCount: this.propertyImages.length,
                 itemBuilder: (BuildContext context, int index) {
                   return PropertyDetailCard(
-                      image: widget.propertyDetail[index].image,
-                      title: widget.propertyDetail[index].title,
-                      description: widget.propertyDetail[index].description);
+                      image: this.propertyImages[index].image,
+                      title: this.propertyImages[index].title,
+                      description: this.propertyImages[index].description);
                 },
                 viewportFraction: 0.75,
                 pagination: new SwiperPagination(
