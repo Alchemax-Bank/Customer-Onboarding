@@ -82,7 +82,7 @@ class NavigationDrawer extends StatelessWidget {
            title: Text('Logout'),
            onTap: () {
              LoginFunctions loginFunctions = new LoginFunctions();
-             loginFunctions.signOut();
+             loginFunctions.signOut(context);
            },
          ),
        ],

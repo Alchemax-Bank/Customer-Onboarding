@@ -41,7 +41,7 @@ class _NirvanaState extends State<Nirvana> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: login ? LandingScreen() : Home(index: 0),
+      home: login == false ? LandingScreen() : Home(index: 0),
     );
   }
 }

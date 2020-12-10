@@ -95,7 +95,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                       child: Text(
-                        "OTP sent to +91 " + this.mobileno,
+                        "OTP sent to " + this.mobileno,
                         style: TextStyle(
                             color: primaryColor,
                             fontSize: 24,

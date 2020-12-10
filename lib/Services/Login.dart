@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:Nirvana/Screens/Home.dart';
+import 'package:Nirvana/Screens/LandingScreen.dart';
 import 'package:Nirvana/Screens/LoginScreen.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class LoginFunctions{
           codeSent: smsOTPSent, 
           timeout: const Duration(seconds: 20),
           verificationCompleted: (AuthCredential phoneAuthCredential) async {
+            print("verifying");
             onVerify(context);
           },
           verificationFailed: (AuthException exceptio) {
@@ -39,7 +41,8 @@ class LoginFunctions{
 
   Future<void> verifyOTP(String status, BuildContext context, String smsOTP, String mobileNo, String mode) async {
       _auth.currentUser().then((user) {
-        if (user != null && mode == 'Login'){
+        if (user == null && mode == 'Login'){
+          print("New User Login");
           Fluttertoast.showToast(
             msg: "Seems you are new here, please register",
             toastLength: Toast.LENGTH_SHORT,
@@ -50,11 +53,14 @@ class LoginFunctions{
             fontSize: 12.0
         );
         }
-        else if (user != null && mode == 'Register') {
-          createRecord(mobileNo);
+        else if (user == null && mode == 'Register') {
+          print("New User Register");
+          status = signIn(context,smsOTP,mobileNo).toString();
           onVerify(context);
         } else {
+          print("Old User Login");
           status = signIn(context,smsOTP,mobileNo).toString();
+          onVerify(context);
         }
       });
   }
@@ -64,7 +70,7 @@ class LoginFunctions{
     try {
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: mobileNo, password: "abc123");
-          print(newUser);
+          print(newUser.user);
     } catch (e) {
       print(e);
     }
@@ -102,9 +108,11 @@ class LoginFunctions{
     return errorMessage;
   }
 
-  signOut()  async{
+  signOut(BuildContext context)  async{
     await _auth.signOut();
-    return new LoginScreen();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('login', false);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => LandingScreen()));
   }
 
   onVerify(BuildContext context) async {
@@ -121,24 +129,23 @@ class LoginFunctions{
     var firstName = prefs.getString("firstName");
     var lastName = prefs.getString("lastName");
 
-    final customer = {
-      "first_name": firstName,
-      "last_name": lastName,
-      "mobile": currentUser.phoneNumber,
+    final tenant = {
+      "username": firstName + " " + lastName,
+      "phone_no": currentUser.phoneNumber.substring(3),
       'firebase_id': currentUser.uid,
-      'fcm_token': tokenId
+      'device_token': tokenId
     };
-    
+
     await prefs.setString("firebase_id", currentUser.uid);
-    // final url = (server+"/customer");
+    final url = (server+"tenant");
+    print(tenant);
     
-    // Response response = await post(Uri.encodeFull(url), body: json.encode(customer), headers: {"Content-Type": "application/json"},);
-    // print(response.body);
-    // bool status = jsonDecode(response.body)["status"];
-    bool status = true;
+    Response response = await post(Uri.encodeFull(url), body: json.encode(tenant), headers: {"Content-Type": "application/json"});
+    print(response.body);
+    bool status = jsonDecode(response.body)["status"];
     if (status == true){
       await prefs.setBool('login', true);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home(index: 0,)));
     }
   }
 }
