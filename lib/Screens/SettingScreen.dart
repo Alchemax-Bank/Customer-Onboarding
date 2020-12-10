@@ -1,8 +1,12 @@
 import 'package:Nirvana/Screens/Drawer.dart';
+import 'package:Nirvana/Services/tenantProfile.dart';
 import 'package:Nirvana/constants.dart';
+import 'package:Nirvana/models/Tenant.dart';
 import 'package:flutter/material.dart';
 import 'package:Nirvana/Widget/SettingsDivider.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -11,7 +15,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  String firstName;
+  Tenant tenant;
   
   @override
   void initState() {
@@ -20,7 +24,12 @@ class _SettingScreenState extends State<SettingScreen> {
   }
   
   void initialise() async {
-    
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var mobile = prefs.getString("mobile");
+    Tenant tmp = await getTenantProfile(mobile);
+    setState(() {
+      tenant = tmp;
+    });
   }
 
   @override
@@ -28,7 +37,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavigationDrawer(),
-      body: SingleChildScrollView(
+      body: tenant != null ? SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -98,7 +107,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        child: Text("Ajinkya Taranekar",
+                        child: Text(this.tenant.name,
                             style: TextStyle(color: Colors.black, fontSize: 15)),
                       ),
                     )
@@ -118,9 +127,28 @@ class _SettingScreenState extends State<SettingScreen> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        child: Text("+91 8518076044",
+                        child: Text("+91 " + this.tenant.phone,
                             style: TextStyle(color: Colors.black, fontSize: 15)),
                       ),
+                    )
+                  ],
+                )),
+                Container(
+                margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text("Nirvana Verified",
+                            style: TextStyle(color: primaryColor, fontSize: 12, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: this.tenant.verified != 0 ?
+                        Icon(Icons.verified_user, color: primaryColor) :
+                        Container()
                     )
                   ],
                 )),
@@ -171,7 +199,12 @@ class _SettingScreenState extends State<SettingScreen> {
             ),
           ],
         ),
-      ),
+      ) : Container(
+            child: SpinKitDoubleBounce(
+              color: primaryColor,
+              size: 50.0,
+            )
+          ),
     );
   }
 }
