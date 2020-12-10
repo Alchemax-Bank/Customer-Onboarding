@@ -40,27 +40,18 @@ class LoginFunctions{
   }
 
   Future<void> verifyOTP(String status, BuildContext context, String smsOTP, String mobileNo, String mode) async {
-      _auth.currentUser().then((user) {
-        if (user == null && mode == 'Login'){
-          print("New User Login");
-          Fluttertoast.showToast(
-            msg: "Seems you are new here, please register",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM, 
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.grey[200],
-            textColor: primaryColor,
-            fontSize: 12.0
-        );
-        }
-        else if (user == null && mode == 'Register') {
+      _auth.currentUser().then((user) async {
+        if (mode == 'Register') {
           print("New User Register");
           status = signIn(context,smsOTP,mobileNo).toString();
           onVerify(context);
         } else {
           print("Old User Login");
           status = signIn(context,smsOTP,mobileNo).toString();
-          onVerify(context);
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('login', true);
+          await prefs.setString('mobile', user.phoneNumber.substring(3));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Home(index: 0,)));
         }
       });
   }
@@ -145,6 +136,7 @@ class LoginFunctions{
     bool status = jsonDecode(response.body)["status"];
     if (status == true){
       await prefs.setBool('login', true);
+      await prefs.setString('mobile', currentUser.phoneNumber.substring(3));
       Navigator.push(context, MaterialPageRoute(builder: (context) => Home(index: 0,)));
     }
   }

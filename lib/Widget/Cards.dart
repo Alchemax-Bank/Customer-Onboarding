@@ -5,8 +5,12 @@ import 'package:page_transition/page_transition.dart';
 import 'package:Nirvana/models/Property.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/Screens/PropertyDetailScreen.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PropertyIntroCard extends StatelessWidget {
+  final Property property;
+  PropertyIntroCard({this.property});
   Widget leftPart(BuildContext context) {
     return Container(
       width: 190,
@@ -25,16 +29,16 @@ class PropertyIntroCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            "The Latitude Condo",
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            this.property.name,
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
           ),
           Text(
-            "Shalimar Township",
-            style: TextStyle(color: grey, height: 1.5, fontSize: 10),
+            this.property.description != null ? this.property.description.toString().substring(0,20) + ' ...' : "No Description",
+            style: TextStyle(color: grey, height: 1.5, fontSize: 9),
           ),
           Text(
-            "Indore, Madhya Pradesh",
-            style: TextStyle(color: grey, height: 0.9, fontSize: 10),
+            this.property.location,
+            style: TextStyle(color: grey, height: 0.9, fontSize: 8),
           ),
         ],
       ),
@@ -95,15 +99,21 @@ class PropertyIntroCard extends StatelessWidget {
 }
 
 class PropertyCard extends StatelessWidget {
+  final Property property;
+  PropertyCard({this.property});
+  
   @override
   Widget build(BuildContext context) {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy/MM/dd');
+    final String date = formatter.format(now);
     return InkWell(
       onTap: () {
         Navigator.push(
             context,
             PageTransition(
                 type: PageTransitionType.rightToLeft,
-                child: PropertyDetailScreen(propertyDetail: propertyDetails)));
+                child: PropertyDetailScreen(propertyDetail: property)));
       },
       child: Stack(
         children: <Widget>[
@@ -140,7 +150,7 @@ class PropertyCard extends StatelessWidget {
                     width: 90,
                     child: Center(
                       child: Text(
-                        "INSURED",
+                        "PREMIUM",
                         style: TextStyle(
                             color: white,
                             fontWeight: FontWeight.bold,
@@ -171,7 +181,7 @@ class PropertyCard extends StatelessWidget {
                             color: white,
                           ),
                           Text(
-                            "2020/11/24",
+                            date,
                             style: TextStyle(fontSize: 10, color: white),
                           )
                         ],
@@ -181,7 +191,7 @@ class PropertyCard extends StatelessWidget {
                   bottom: 10,
                   left: 10,
                   right: 10,
-                  child: PropertyIntroCard(),
+                  child: PropertyIntroCard(property: property),
                 ),
                 Positioned(
                   bottom: 80,
@@ -216,6 +226,10 @@ class PropertyCard extends StatelessWidget {
 }
 
 class PropertyCard1 extends StatelessWidget {
+  final Property property;
+  final Map<String,double> origin;
+  PropertyCard1({this.property, this.origin});
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -230,48 +244,109 @@ class PropertyCard1 extends StatelessWidget {
                 offset: const Offset(2, 6),
                 blurRadius: 10)
           ]),
-      height: 120,
+      height: MediaQuery.of(context).size.height * 0.25,
+      width: MediaQuery.of(context).size.width * 0.8,
       child: Row(
         children: <Widget>[
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                "Mallan Villas",
-                style: prefix0.TextStyle(
-                    fontSize: 20,
-                    color: Color(0xFF465C61),
-                    fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(
+                    this.property.name,
+                    style: prefix0.TextStyle(
+                        fontSize: 18,
+                        color: Color(0xFF465C61),
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.8 - this.property.name.toString().length * 13.5,),
+                  IconButton(
+                    icon: Icon(Icons.navigation, color:  primaryColor,),
+                    onPressed: () {
+                      _launchMapsUrl(this.property.latitude, this.property.longitude);
+                    },
+                    ),
+                ],
               ),
               Text(
-                "Rental Date: 2nd Monthly",
+                this.property.description != null ? 
+                  this.property.description.substring(0,40) + ' ...' :
+                  "No Description",
                 style: prefix0.TextStyle(
                   fontSize: 12,
                   color: Color(0xFF94979C),
                   height: 1.8,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
-                "Scheme Number 114, Indore",
+                this.property.location,
                 style: prefix0.TextStyle(
-                  fontSize: 12,
+                  fontSize: 10,
                   height: 1,
                   color: Color(0xFF94979C),
                 ),
               ),
-              Text(
-                "Past Due: 24 November 2020",
-                style: prefix0.TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFF94979C),
-                ),
-              )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      Icon(Icons.money, color:  primaryColor,),
+                      SizedBox(width: 4,),
+                      Text(this.property.price.toString(), style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                    ],
+                  ),
+                  SizedBox(width: 20,),
+                  Column(
+                    children: <Widget>[
+                      Icon(Icons.king_bed, color:  primaryColor,),
+                      SizedBox(width: 4,),
+                      Text(this.property.numberOfRooms.toString() + ' bed', style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                    ],
+                  ),
+                  SizedBox(width: 20,),
+                  Column(
+                    children: <Widget>[
+                      Icon(Icons.bathtub, color:  primaryColor,),
+                      SizedBox(width: 4,),
+                      Text(this.property.bathrooms.toString(), style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                    ],
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.75 - 255,),
+                  FloatingActionButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.leftToRightWithFade,
+                          child: PropertyDetailScreen(propertyDetail: property,)));
+                    },
+                    child: Icon(Icons.navigate_next),
+                    backgroundColor: primaryColor,
+                  ),
+                ],
+              ),
             ],
           )
         ],
       ),
     );
+  }
+  void _launchMapsUrl(double lat, double lon) async {
+    // var latitude = origin['latitude'];
+    // var longitude = origin['longitude'];
+    
+    final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lon';
+    print(url);
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 

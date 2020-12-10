@@ -36,6 +36,7 @@ class _NirvanaState extends State<Nirvana> {
   void initState() {
     super.initState();
     checkLogin();
+    print(login);
   }
 
   @override
