@@ -1,11 +1,11 @@
 import 'package:Nirvana/Screens/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:Nirvana/Widget/Cards.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GharScreen extends StatefulWidget {
   @override
@@ -22,7 +22,18 @@ class _GharScreenState extends State<GharScreen> {
   }
   
   void initialise() async {
-    
+    checkBooking();
+  }
+
+
+  bool booking = false;
+
+  Future checkBooking() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool _booking = (prefs.getBool('booking') == null);
+    setState(() {
+      booking = _booking;
+    });
   }
 
   @override
@@ -83,7 +94,7 @@ class _GharScreenState extends State<GharScreen> {
                       ),
                 ),
               ),
-              Container(
+              booking ? Container() : Container(
                 height: 260,
                 color: Colors.transparent,
                 margin: EdgeInsets.only(top: 90),
@@ -110,7 +121,26 @@ class _GharScreenState extends State<GharScreen> {
             ],
           ),
           SizedBox(height: 20,),
-          Column(
+          booking ? Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.4,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/images/booking.png"),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter),
+            ),
+            child: Stack(children: <Widget>[
+              Positioned(
+                  bottom: -5.0,
+                  left: MediaQuery.of(context).size.width*0.35,
+                  child: Text("Haven't book yet? \nExplore Nivana!",
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w400))),
+            ])
+            ) : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
@@ -207,7 +237,7 @@ class _GharScreenState extends State<GharScreen> {
                     ),
 
                     FlatButton(
-                      child : Text("Chat", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
+                      child : Text("Call", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
                       onPressed: (){},
                       color: primaryColor,
                     )
