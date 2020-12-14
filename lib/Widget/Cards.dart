@@ -317,17 +317,22 @@ class PropertyCard1 extends StatelessWidget {
                     ],
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.75 - 255,),
-                  FloatingActionButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.leftToRightWithFade,
-                          child: PropertyDetailScreen(propertyDetail: property,)));
-                    },
-                    child: Icon(Icons.navigate_next),
-                    backgroundColor: primaryColor,
-                  ),
+                  ClipOval(
+                    child: Material(
+                      color: Colors.blue, // button color
+                      child: InkWell(
+                        child: SizedBox(width: 56, height: 56, child: Icon(Icons.navigate_next, color: Colors.white,)),
+                        onTap: () {
+                          Navigator.pushReplacement(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.leftToRightWithFade,
+                              child: PropertyDetailScreen(propertyDetail: property,
+                              )));
+                        },
+                      ),
+                    ),
+                  )
                 ],
               ),
             ],

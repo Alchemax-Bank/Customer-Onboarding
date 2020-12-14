@@ -1,23 +1,18 @@
 import 'package:Nirvana/Screens/Drawer.dart';
-import 'package:Nirvana/Screens/Home.dart';
-import 'package:Nirvana/Screens/BookingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:Nirvana/Widget/Cards.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PropertyDetailScreen extends StatefulWidget {
+class BookingScreen extends StatefulWidget {
   final Property propertyDetail;
-  PropertyDetailScreen({this.propertyDetail});
+  BookingScreen({this.propertyDetail});
   @override
-  _PropertyDetailScreenState createState() => _PropertyDetailScreenState();
+  _BookingScreenState createState() => _BookingScreenState();
 }
 
-class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
+class _BookingScreenState extends State<BookingScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   
   @override
@@ -58,21 +53,15 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                           padding: EdgeInsets.only(right: 8),
                           child: IconButton(
                             icon: new Icon(
-                              Icons.navigate_before,
+                              Icons.menu,
                               size: 24,
                               color: white,
                             ),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                              context,
-                              PageTransition(
-                                  type: PageTransitionType.leftToRightWithFade,
-                                  child: Home(index:0)));
-                            },
+                            onPressed: () => _scaffoldKey.currentState.openDrawer(),
                           ),
                         ),
                         title: Text(
-                          "Property",
+                          "Booking",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 18,
@@ -84,44 +73,14 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                           padding: EdgeInsets.only(right: 8),
                           child: IconButton(
                             icon: new Icon(
-                              Icons.shopping_bag,
+                              Icons.notifications,
                               size: 24,
                               color: white,
                             ),
-                            onPressed: () => { 
-                              Navigator.pushReplacement(
-                              context,
-                              PageTransition(
-                                  type: PageTransitionType.leftToRightWithFade,
-                                  child: BookingScreen(propertyDetail: widget.propertyDetail)))
-                            },
+                            onPressed: () => {},
                           ),
                         )
                       ),
-                ),
-              ),
-              Container(
-                height: 260,
-                color: Colors.transparent,
-                margin: EdgeInsets.only(top: 90),
-                child: Swiper(
-                  loop: false,
-                  itemWidth: 360,
-                  itemHeight: 420,
-                  index: 1,
-                  itemCount: propertyDetails.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return PropertyDetailCard(
-                        image: propertyDetails[index].image,
-                        title: propertyDetails[index].title,
-                        description: propertyDetails[index].description);
-                  },
-                  viewportFraction: 0.75,
-                  pagination: new SwiperPagination(
-                      alignment: Alignment(0, 1.4),
-                      builder: DotSwiperPaginationBuilder(color: grey)),
-                  scale: 0.8,
-                  layout: SwiperLayout.DEFAULT,
                 ),
               ),
             ],
@@ -177,23 +136,23 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Icon(Icons.house, size: 12, color: Colors.grey[600],),
+                        Icon(Icons.people, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text(widget.propertyDetail.area_in_sqft.toString() + ' area' , style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text("5 people", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                     Row(
                       children: <Widget>[
-                        Icon(Icons.king_bed, size: 12, color: Colors.grey[600],),
+                        Icon(Icons.local_offer, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text(widget.propertyDetail.numberOfRooms.toString() + " Beds", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text("2 Beds", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                     Row(
                       children: <Widget>[
                         Icon(Icons.airline_seat_legroom_reduced, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text(widget.propertyDetail.bathrooms, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text("2 Bathrooms", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                   ],
@@ -230,10 +189,8 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                     ),
 
                     FlatButton(
-                      child : Text("Call", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
-                      onPressed: (){
-                        launch("tel://8518076044");
-                      },
+                      child : Text("Chat", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
+                      onPressed: (){},
                       color: primaryColor,
                     )
                   ],
@@ -248,66 +205,13 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
 
               Container(
                 margin: EdgeInsets.only(left: 32, right: 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("Features", style: TextStyle(color: Colors.grey[800], fontSize: 18, fontWeight: FontWeight.w600), ),
-                    SizedBox(height: 16,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.wifi, color:  primaryColor,),
-                            SizedBox(width: 4,),
-                            Text("Wifi", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.local_offer, color:  primaryColor,),
-                            SizedBox(width: 4,),
-                            Text("Bed", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.videogame_asset, color:  primaryColor,),
-                            SizedBox(width: 4,),
-                            Text("T. Tennis", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.wifi, color:  primaryColor,),
-                            SizedBox(width: 4,),
-                            Text("Balcony", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.local_offer, color:  primaryColor,),
-                            SizedBox(width: 4,),
-                            Text("Lift", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Icon(Icons.videogame_asset, color:  primaryColor,),
-                            SizedBox(width: 4,),
-                            Text("Electricity \n Backup", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                child: FlatButton(
+                  child : Text("Book", style: TextStyle(color: Colors.grey[100], fontSize: 16, fontWeight: FontWeight.w600), ),
+                  onPressed: (){
+                    //booking algo here
+                  },
+                  color: primaryColor,
+                )
               )
             ],
           ),
