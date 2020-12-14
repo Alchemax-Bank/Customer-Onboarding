@@ -52,7 +52,7 @@ Future<List<Property>> getProperties(Map<String, dynamic> order) async {
 Future<List<Property>> getFilteredProperties(Map<String, dynamic> filter) async {
   List<Property> reports = [];
   try {
-    final url = (server+"/properties/apply_filter");
+    final url = (server+"properties/apply_filter");
     Response response = await post(Uri.encodeFull(url), body: json.encode(filter), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
     List data = jsonDecode(response.body)["data"];
     for (int i = 0; i < data.length; i++) {

@@ -1,8 +1,15 @@
 import 'package:Nirvana/Screens/Drawer.dart';
+import 'package:Nirvana/Screens/LocationPicker.dart';
 import 'package:Nirvana/Screens/PropertyDetailScreen.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Nirvana/Services/propertyList.dart';
+import 'package:Nirvana/models/Property.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -11,15 +18,41 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  
+  var startLocation = [];
+  SharedPreferences prefs;
+  List<Property> property;
+  Map<String, dynamic> filter;
+
   @override
   void initState() {
     super.initState();
-    initialise();
+    startLocation.insert(0, "Where do you wanna live?");
+    init();
   }
-  
-  void initialise() async {
-    
+
+  init() async {
+    prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('cnt', 0);
+  }
+
+  setLocation(BuildContext context) async {
+    await prefs.setString('lat', startLocation[1].toString());
+    await prefs.setString('lon', startLocation[2].toString());
+    filter = {
+      "origin": {
+        "latitude": startLocation[1],
+        "longitude": startLocation[2],
+      },
+      "distance": 10,
+      "bhk": 2,
+      "price": 10000,
+      "type": null
+    };
+    print(filter);
+    List<Property> tmp = await getFilteredProperties(filter);
+    setState(() {
+      property = tmp;
+    });
   }
 
   @override
@@ -80,29 +113,90 @@ class _SearchScreenState extends State<SearchScreen> {
             ],
           ),
           
-          Container(
-            margin: EdgeInsets.only(left: 16, right: 16),
-            child: TextField(
-              decoration: InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[300])
-                ),
-                prefixIcon: Icon(Icons.search, color: Colors.grey[500],),
-                suffixIcon: Icon(Icons.filter_list, color: primaryColor,),
-                hintText: "Enter location",
-                focusColor: primaryColor
-              ),
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
             ),
+            child: GestureDetector(
+              onTap: () => {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LocationPicker(header: "Enter Location"))).then((value) => setStart(value))
+              },
+              child: Container(
+                width: 0.9 *  MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                child: Center(
+                  child: Text(startLocation[0].toString(),
+                    style: TextStyle(
+                      fontSize: 0.02 *  MediaQuery.of(context).size.height,
+                      color: grey
+                    )
+                  ),
+                )
+              ),
+            )
           ),
 
-          Container(
+          SizedBox(
+            height: 15,
+          ),
+          RaisedButton(
+            onPressed: () => {
+              if(startLocation.length == 3)
+                setLocation(context)
+              else
+                showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Location not selected",
+                      style: TextStyle(
+                        color: primaryColor
+                      ),
+                    ),
+                    content: Text("Please select your start and end location to continue"),
+                    actions: [
+                      FlatButton(
+                        child: Text("OK",
+                          style: TextStyle(
+                            color: primaryColor
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                },
+              )
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+            ),
+            color: primaryColor,
+            elevation: 5,
+            child: Text(
+              "Let's go!",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 0.1 * MediaQuery.of(context).size.width, vertical: 0.01 * MediaQuery.of(context).size.height),
+          ),
+
+          SizedBox(
+            height: 15,
+          ),
+          
+          startLocation.length == 3 && property !=null ? Container(
             width: double.infinity,
             padding: EdgeInsets.only(left: 32, right:32, top: 16, bottom: 16),
             color: Colors.grey[100],
-            child: Text("100 Results Found", style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.bold),),
-          ),
+            child: Text(property.length.toString() + " Results Found", style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.bold),),
+          ) : Container(),
 
-          Expanded(
+          startLocation.length == 3 && property !=null ? Expanded(
             child: Container(
               padding: EdgeInsets.only(left: 16, right: 16),
               color: Colors.grey[100],
@@ -113,20 +207,16 @@ class _SearchScreenState extends State<SearchScreen> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.favorite_border, color: index %2 == 0  ? Colors.grey[400] : Colors.redAccent,), onPressed: () {  },
-                            ),
-
                             Container(
                               width: 90,
                               height: 90,
                               child: GestureDetector(
                                 child: ClipOval(
-                                  child: Image.asset("assets/${index+1}.jpg", fit: BoxFit.cover,),
+                                  child: Image.asset("assets/images/home.jpg", fit: BoxFit.cover,),
                                 ),
                                 onTap: (){
                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => PropertyDetailScreen()
+                                    builder: (context) => PropertyDetailScreen(propertyDetail: property[index])
                                   ));
                                 },
                               )
@@ -138,15 +228,17 @@ class _SearchScreenState extends State<SearchScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Preimer Towers", style: TextStyle(fontSize: 22, color: Colors.grey[800], fontWeight: FontWeight.bold),),
-                                  Text("Nipania, Indore, 452010", style: TextStyle(color: Colors.grey[500],), overflow: TextOverflow.ellipsis,),
+                                  Text(property[index].name, style: TextStyle(fontSize: 22, color: Colors.grey[800], fontWeight: FontWeight.bold),),
+                                  Text(property[index].location, style: TextStyle(color: Colors.grey[500],), overflow: TextOverflow.ellipsis,),
                                   SizedBox(height: 8,),
-                                  Text("3,000 Rs /day", style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.bold),),
+                                  Text("Rs. "+ property[index].price.toString(), style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                             ),
 
-                            IconButton(icon: Icon(Icons.navigation), onPressed: () {  },)
+                            IconButton(icon: Icon(Icons.navigation), onPressed: () { 
+                              _launchMapsUrl(property[index].latitude, property[index].longitude);
+                            },)
                           ],
                         ),
 
@@ -159,23 +251,23 @@ class _SearchScreenState extends State<SearchScreen> {
                             children: <Widget>[
                               Row(
                                 children: <Widget>[
-                                  Icon(Icons.people, size: 12, color: Colors.grey[600],),
+                                  Icon(Icons.home, size: 12, color: Colors.grey[600],),
                                   SizedBox(width: 4,),
-                                  Text("5 people", style: TextStyle(color: Colors.grey[600]),)
+                                  Text(property[index].area_in_sqft.toString() + " \narea", style: TextStyle(color: Colors.grey[600]),)
                                 ],
                               ),
                               Row(
                                 children: <Widget>[
-                                  Icon(Icons.local_offer, size: 12, color: Colors.grey[600],),
+                                  Icon(Icons.king_bed, size: 12, color: Colors.grey[600],),
                                   SizedBox(width: 4,),
-                                  Text("2 Beds", style: TextStyle(color: Colors.grey[600]),)
+                                  Text(property[index].numberOfRooms.toString() + " \nBedrooms", style: TextStyle(color: Colors.grey[600]),)
                                 ],
                               ),
                               Row(
                                 children: <Widget>[
                                   Icon(Icons.airline_seat_legroom_reduced, size: 12, color: Colors.grey[600],),
                                   SizedBox(width: 4,),
-                                  Text("2 Bathrooms", style: TextStyle(color: Colors.grey[600]),)
+                                  Text(property[index].bathrooms.toString().split(" ")[0] + "\nBathroom", style: TextStyle(color: Colors.grey[600]),)
                                 ],
                               ),
                             ],
@@ -188,14 +280,34 @@ class _SearchScreenState extends State<SearchScreen> {
                     );
                   },
                   separatorBuilder: (context, index) => Divider(),
-                  itemCount: 5
-
-
+                  itemCount: property.length
               ),
             ),
-          )
+          ) : SpinKitWave(
+                color: primaryColor,
+                size: 50.0,
+              )
         ],
       ),
     );
+  }
+  setStart(var value) async {
+    if(value.length > 0) {
+      setState(() {
+        startLocation = value;
+      });
+    }
+  }
+  void _launchMapsUrl(double lat, double lon) async {
+    // var latitude = origin['latitude'];
+    // var longitude = origin['longitude'];
+    
+    final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lon';
+    print(url);
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
