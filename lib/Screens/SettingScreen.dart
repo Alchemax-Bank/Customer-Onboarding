@@ -7,6 +7,8 @@ import 'package:Nirvana/Widget/SettingsDivider.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Nirvana/Screens/ProfileScreen.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -132,8 +134,9 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                     )
                   ],
-                )),
-                Container(
+                )
+              ),
+              Container(
                 margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
                 child: Row(
                   children: <Widget>[
@@ -151,7 +154,22 @@ class _SettingScreenState extends State<SettingScreen> {
                         Container()
                     )
                   ],
-                )),
+                )
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
+                child: FlatButton(
+                      child : Text("Update Account", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
+                      onPressed: (){
+                        Navigator.pushReplacement(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.leftToRightWithFade,
+                              child: ProfileScreen()));
+                      },
+                      color: primaryColor,
+                )
+              ),
             Padding(padding: EdgeInsets.all(8)),
             SettingsDivider(dividerTitle: "NOTIFICATIONS"),
             Container(
@@ -174,19 +192,13 @@ class _SettingScreenState extends State<SettingScreen> {
             Container(
               margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
               alignment: Alignment.topLeft,
-              child: Text("Change Location",
-                  style: TextStyle(color: Colors.black, fontSize: 15)),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
-              alignment: Alignment.topLeft,
               child: Text("Log Out",
                   style: TextStyle(color: Colors.black, fontSize: 15)),
             ),
             Container(
               margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
               alignment: Alignment.topLeft,
-              child: Text("Refer the APP",
+              child: Text("Refer the App! ",
                   style: TextStyle(color: Colors.black, fontSize: 15)),
             ),
             Padding(padding: EdgeInsets.all(8)),
