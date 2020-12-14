@@ -55,7 +55,7 @@ class NavigationDrawer extends StatelessWidget {
          ),
          createDrawerBodyItem(
            icon: Icons.search,
-           title: 'Search',
+           title: 'Explore',
            onTap: () =>
                Navigator.pushReplacement(
                 context,

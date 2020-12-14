@@ -25,12 +25,12 @@ class _HomeState extends State<Home> {
 
   int _selectedIndex =0;
   void initialise() async {
-    _selectedIndex = widget.index;  
+    _selectedIndex = widget.index; 
   }
   
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black);
-  List<Widget> _widgetOptions = [HomeScreen(), SearchScreen(), GharScreen(), SettingScreen()];
+  List<Widget> _widgetOptions = [HomeScreen(), SearchScreen(), GharScreen() , SettingScreen()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.near_me),
-            title: Text('Search'),
+            title: Text('Explore'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.hail),

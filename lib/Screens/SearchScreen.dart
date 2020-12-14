@@ -55,7 +55,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),
                       title: Text(
-                        "Search",
+                        "Explore",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 18,
