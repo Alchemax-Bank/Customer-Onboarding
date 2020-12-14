@@ -18,15 +18,19 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  var startLocation = [];
+  var location = [];
   SharedPreferences prefs;
   List<Property> property;
   Map<String, dynamic> filter;
+  int distance = 5;
+  int bhk = 1;
+  int price = 1000;
+  String type = 'Apartment';
 
   @override
   void initState() {
     super.initState();
-    startLocation.insert(0, "Where do you wanna live?");
+    location.insert(0, "Where do you wanna live?");
     init();
   }
 
@@ -36,17 +40,17 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   setLocation(BuildContext context) async {
-    await prefs.setString('lat', startLocation[1].toString());
-    await prefs.setString('lon', startLocation[2].toString());
+    await prefs.setString('lat', location[1].toString());
+    await prefs.setString('lon', location[2].toString());
     filter = {
       "origin": {
-        "latitude": startLocation[1],
-        "longitude": startLocation[2],
+        "latitude": location[1],
+        "longitude": location[2],
       },
-      "distance": 10,
-      "bhk": 2,
-      "price": 10000,
-      "type": null
+      "distance": distance,
+      "bhk": bhk,
+      "price": price,
+      "type": type
     };
     print(filter);
     List<Property> tmp = await getFilteredProperties(filter);
@@ -117,23 +121,182 @@ class _SearchScreenState extends State<SearchScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15)
             ),
-            child: GestureDetector(
-              onTap: () => {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LocationPicker(header: "Enter Location"))).then((value) => setStart(value))
-              },
-              child: Container(
-                width: 0.9 *  MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-                child: Center(
-                  child: Text(startLocation[0].toString(),
-                    style: TextStyle(
-                      fontSize: 0.02 *  MediaQuery.of(context).size.height,
-                      color: grey
+            child: Row(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () => {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LocationPicker(header: "Enter Location"))).then((value) => setStart(value))
+                  },
+                  child: Container(
+                    width: 0.8 *  MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                    child: Center(
+                      child: Text(location[0].toString(),
+                        style: TextStyle(
+                          fontSize: 0.02 *  MediaQuery.of(context).size.height,
+                          color: grey
+                        )
+                      ),
                     )
                   ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.filter_alt, color: primaryColor),
+                  onPressed: () {
+                    showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Add Filters",
+                          style: TextStyle(
+                            color: primaryColor
+                          ),
+                        ),
+                        content: new Container(
+                          width: 260.0,
+                          height: 200.0,
+                          decoration: new BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: const Color(0xFFFFFF),
+                          borderRadius:
+                              new BorderRadius.all(new Radius.circular(50.0)),
+                          ),
+                          child: new Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text('Distance: ', style: TextStyle(color: primaryColor,),),
+                                  DropdownButton<int>(
+                                    value: distance,
+                                    icon: Icon(Icons.arrow_downward),
+                                    iconSize: 24,
+                                    elevation: 16,
+                                    style: TextStyle(
+                                      color: grey
+                                    ),
+                                    onChanged: (int newValue) {
+                                      setState(() {
+                                        distance = newValue;
+                                      });
+                                    },
+                                    items: <int>[5, 10, 20, 50]
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                        return DropdownMenuItem<int>(
+                                          value: value,
+                                          child: Text(value.toString()),
+                                        );
+                                      })
+                                      .toList(),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text('BHK: ', style: TextStyle(color: primaryColor,),),
+                                  DropdownButton<int>(
+                                    value: bhk,
+                                    icon: Icon(Icons.arrow_downward),
+                                    iconSize: 24,
+                                    elevation: 16,
+                                    style: TextStyle(
+                                      color: grey
+                                    ),
+                                    onChanged: (int newValue) {
+                                      setState(() {
+                                        bhk = newValue;
+                                      });
+                                    },
+                                    items: <int>[1, 2, 3, 4, 5]
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                        return DropdownMenuItem<int>(
+                                          value: value,
+                                          child: Text(value.toString()),
+                                        );
+                                      })
+                                      .toList(),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text('Price: ', style: TextStyle(color: primaryColor,),),
+                                  DropdownButton<int>(
+                                    value: price,
+                                    icon: Icon(Icons.arrow_downward),
+                                    iconSize: 24,
+                                    elevation: 16,
+                                    style: TextStyle(
+                                      color: grey
+                                    ),
+                                    onChanged: (int newValue) {
+                                      setState(() {
+                                        price = newValue;
+                                      });
+                                    },
+                                    items: <int>[1000, 5000, 10000, 50000]
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                        return DropdownMenuItem<int>(
+                                          value: value,
+                                          child: Text(value.toString()),
+                                        );
+                                      })
+                                      .toList(),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text('Type: ', style: TextStyle(color: primaryColor,),),
+                                  DropdownButton<String>(
+                                    value: type,
+                                    icon: Icon(Icons.arrow_downward),
+                                    iconSize: 24,
+                                    elevation: 16,
+                                    style: TextStyle(
+                                      color: grey
+                                    ),
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        type = newValue;
+                                      });
+                                    },
+                                    items: <String>['Apartment', 'Independent House', 'Independent Floor', 'Studio Apartment', 'Villa']
+                                      .map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      })
+                                      .toList(),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        actions: [
+                            FlatButton(
+                              child: Text("OK",
+                                style: TextStyle(
+                                  color: primaryColor
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                      );
+                    },
+                  );
+                  },
                 )
-              ),
-            )
+              ],
+            ),
           ),
 
           SizedBox(
@@ -141,7 +304,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           RaisedButton(
             onPressed: () => {
-              if(startLocation.length == 3)
+              if(location.length == 3)
                 setLocation(context)
               else
                 showDialog(
@@ -153,7 +316,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         color: primaryColor
                       ),
                     ),
-                    content: Text("Please select your start and end location to continue"),
+                    content: Text("Please select your location to continue"),
                     actions: [
                       FlatButton(
                         child: Text("OK",
@@ -189,14 +352,14 @@ class _SearchScreenState extends State<SearchScreen> {
             height: 15,
           ),
           
-          startLocation.length == 3 && property !=null ? Container(
+          location.length == 3 && property !=null ? Container(
             width: double.infinity,
             padding: EdgeInsets.only(left: 32, right:32, top: 16, bottom: 16),
             color: Colors.grey[100],
             child: Text(property.length.toString() + " Results Found", style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.bold),),
           ) : Container(),
 
-          startLocation.length == 3 && property !=null ? Expanded(
+          location.length == 3 && property !=null ? Expanded(
             child: Container(
               padding: EdgeInsets.only(left: 16, right: 16),
               color: Colors.grey[100],
@@ -294,7 +457,7 @@ class _SearchScreenState extends State<SearchScreen> {
   setStart(var value) async {
     if(value.length > 0) {
       setState(() {
-        startLocation = value;
+        location = value;
       });
     }
   }
