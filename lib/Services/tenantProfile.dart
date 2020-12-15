@@ -17,3 +17,17 @@ Future<Tenant> getTenantProfile(String mobile) async {
   }
   return tenant;
 }
+Future<Tenant> updateTenantProfile(Map<String, dynamic> profile) async {
+  Tenant tenant;
+  try {
+    final url = (server+"tenant/update");
+    Response response = await post(Uri.encodeFull(url), body: json.encode(profile), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
+    print(response.body);
+    Map<String, dynamic> data = jsonDecode(response.body)["data"];
+    tenant = new Tenant(
+          name: data["username"], address: data["address"], phone: data["phone_no"].toString(), verified: data['is_verified']);
+  } catch (e) {
+    print(e);
+  }
+  return tenant;
+}

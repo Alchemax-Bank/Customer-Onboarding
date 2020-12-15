@@ -165,7 +165,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           context,
                           PageTransition(
                               type: PageTransitionType.leftToRightWithFade,
-                              child: ProfileScreen()));
+                              child: ProfileScreen(tenant: tenant,)));
                       },
                       color: primaryColor,
                 )
