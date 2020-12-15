@@ -11,7 +11,20 @@ Future<Tenant> getTenantProfile(String mobile) async {
     print(response.body);
     Map<String, dynamic> data = jsonDecode(response.body)["data"];
     tenant = new Tenant(
-          name: data["username"], address: data["address"], phone: data["phone_no"].toString(), verified: data['is_verified']);
+      id: data['id'],
+      username: data["username"],
+      address: data["address"], 
+      phone_no: data["phone_no"].toString(), 
+      is_verified: data['is_verified'],
+      budget: data["budget"],
+      device_token: data["device_token"],
+      dob: data["dob"],
+      firebase_id: data["firebase_id"],
+      gender: data["gender"],
+      nationality: data["nationality"],
+      registered_time: data["registered_time"],
+      updated_time: data['updated_time']
+    );
   } catch (e) {
     print(e);
   }
@@ -21,11 +34,26 @@ Future<Tenant> updateTenantProfile(Map<String, dynamic> profile) async {
   Tenant tenant;
   try {
     final url = (server+"tenant/update");
+    print(profile);
+    
     Response response = await post(Uri.encodeFull(url), body: json.encode(profile), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
     print(response.body);
     Map<String, dynamic> data = jsonDecode(response.body)["data"];
-    tenant = new Tenant(
-          name: data["username"], address: data["address"], phone: data["phone_no"].toString(), verified: data['is_verified']);
+    tenant = new Tenant(  
+      id: data['id'],
+      username: data["username"],
+      address: data["address"], 
+      phone_no: data["phone_no"].toString(), 
+      is_verified: data['is_verified'],
+      budget: data["budget"],
+      device_token: data["device_token"],
+      dob: data["dob"],
+      firebase_id: data["firebase_id"],
+      gender: data["gender"],
+      nationality: data["nationality"],
+      registered_time: data["registered_time"],
+      updated_time: data['updated_time']
+    );
   } catch (e) {
     print(e);
   }

@@ -109,7 +109,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        child: Text(this.tenant.name,
+                        child: Text(this.tenant.username,
                             style: TextStyle(color: Colors.black, fontSize: 15)),
                       ),
                     )
@@ -129,7 +129,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        child: Text("+91 " + this.tenant.phone,
+                        child: Text("+91 " + this.tenant.phone_no,
                             style: TextStyle(color: Colors.black, fontSize: 15)),
                       ),
                     )
@@ -149,7 +149,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: this.tenant.verified != 0 ?
+                      child: this.tenant.is_verified != 0 ?
                         Icon(Icons.verified_user, color: primaryColor) :
                         Container()
                     )

@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:Nirvana/Services/tenantProfile.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:xml2json/xml2json.dart';
 import 'package:Nirvana/Screens/Home.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -22,6 +24,10 @@ class _ProfileState extends State<ProfileScreen> {
   var barcode = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var data;
+  var gender = "Male";
+  var username;
+  var address;
+  var tenantProfile;
 
   @override
   void initState() {
@@ -30,19 +36,20 @@ class _ProfileState extends State<ProfileScreen> {
   }
   
   void initialise() async {
+    
   }
   
-  DateTime selectedDate = DateTime.now();
+  DateTime dob = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
+        initialDate: dob,
         firstDate: DateTime(1901, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate)
+        lastDate: DateTime.now());
+    if (picked != null && picked != dob)
       setState(() {
-        selectedDate = picked;
+        dob = picked;
       });
   }
   @override
@@ -147,7 +154,7 @@ class _ProfileState extends State<ProfileScreen> {
                       child: Container(
                           width: MediaQuery.of(context).size.width * 0.8,
                           child:  TextFormField(
-                          initialValue: this.data['@name'] ,
+                          initialValue: this.username ,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(80),
@@ -167,7 +174,9 @@ class _ProfileState extends State<ProfileScreen> {
                                 EdgeInsets.symmetric(horizontal: 17, vertical: 12),
                           ),
                           onChanged: (value) async{
-                            
+                            setState(() {
+                              this.username = value;
+                            });
                           },
                         ),
                       ),
@@ -190,33 +199,31 @@ class _ProfileState extends State<ProfileScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8, bottom: 15),
+                      padding: EdgeInsets.only(left: 15, right: 8, bottom: 15),
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.8,
-                        child: TextFormField(
-                          initialValue: this.data['@gender'] == 'M' ? "Male" : "Female",
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(80),
-                              borderSide:
-                                  const BorderSide(color: Colors.transparent, width: 0.0),
+                        child: DropdownButton<String>(
+                            value: this.gender,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(
+                              color: Colors.black
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(80),
-                              borderSide:
-                                  const BorderSide(color: Colors.transparent, width: 0.0),
-                            ),
-                            // disabledBorder: new InputBorder(borderSide: BorderSide.none),
-                            hintStyle: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                            filled: true,
-                            fillColor: darkGrey,
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 17, vertical: 12),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                this.gender = newValue;
+                              });
+                            },
+                            items: <String>['Male', 'Female', 'Other']
+                              .map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              })
+                              .toList(),
                           ),
-                          onChanged: (value) async{
-                          
-                          },
-                        ),
                       ),
                     ),
                   ],
@@ -241,7 +248,7 @@ class _ProfileState extends State<ProfileScreen> {
                       child: Container(
                           width: MediaQuery.of(context).size.width * 0.8,
                           child:  TextFormField(
-                          initialValue: this.data.containsKey('@loc') ? this.data['@loc'] : this.data['@house'].toString() + ', ' + this.data['@street'] + ', '+ this.data['@lm'] + ', ' + this.data['@subdist'] + ', ' + this.data['@state'] ,
+                          initialValue: this.address ,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(80),
@@ -261,7 +268,9 @@ class _ProfileState extends State<ProfileScreen> {
                                 EdgeInsets.symmetric(horizontal: 17, vertical: 12),
                           ),
                           onChanged: (value) async{
-                            
+                            setState(() {
+                              this.address = value;
+                            });
                           },
                         ),
                       ),
@@ -284,32 +293,20 @@ class _ProfileState extends State<ProfileScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8, bottom: 15),
+                      padding: EdgeInsets.only(left: 15, right: 8, bottom: 15),
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.8,
-                        child: TextFormField(
-                          initialValue: this.data['@dob'],
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(80),
-                              borderSide:
-                                  const BorderSide(color: Colors.transparent, width: 0.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            SizedBox(width: 20.0,),
+                            IconButton(
+                              onPressed: () => _selectDate(context),
+                              icon: Icon(Icons.calendar_today),
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(80),
-                              borderSide:
-                                  const BorderSide(color: Colors.transparent, width: 0.0),
-                            ),
-                            // disabledBorder: new InputBorder(borderSide: BorderSide.none),
-                            hintStyle: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                            filled: true,
-                            fillColor: darkGrey,
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 17, vertical: 12),
-                          ),
-                          onChanged: (value) async{
-                          
-                          },
+                            SizedBox(width: 20.0,),
+                            Text("${dob.toLocal()}".split(' ')[0]),
+                          ],
                         ),
                       ),
                     ),
@@ -318,16 +315,42 @@ class _ProfileState extends State<ProfileScreen> {
               ],
             
           ): Container(),
-          Container(
+          this.data !=null ? Container(
             margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
             child: FlatButton(
                   child : Text("Update Account", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
                   onPressed: (){
                     //update account
+                    var profile ={
+                      "id": widget.tenant.id,
+                      "username" : this.username,
+                      "dob" : this.dob.toLocal().toString().split(' ')[0],
+                      "gender" : this.gender,
+                      "address" : this.address,
+                      "nationality" : "Indian",
+                    };
+                    var tmp = updateTenantProfile(profile);
+                    setState((){
+                        this.tenantProfile = tmp;
+                    });
+                    Fluttertoast.showToast(
+                        msg: "Tenant Profile Updated",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM, 
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.grey[200],
+                        textColor: primaryColor,
+                        fontSize: 12.0
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.rightToLeftWithFade,
+                          child: Home(index: 3)));
                   },
                   color: primaryColor,
             )
-          ),
+          ): Container(),
           ],
           )
         )
@@ -346,7 +369,10 @@ class _ProfileState extends State<ProfileScreen> {
       print(response);
       setState(() => this.barcode = barcode.rawContent);
       setState(() => this.data = response);
-      setState(() => this.selectedDate = DateFormat('d/MM/yyyy').parse(data['@dob']));
+      setState(() => this.dob = DateFormat('d/MM/yyyy').parse(data['@dob']));
+      setState(() => this.username = data['@name']);
+      setState(() => this.gender = this.data['@gender'] == 'M' ? "Male" : "Female");
+      setState(() => this.address = this.data.containsKey('@loc') ? this.data['@loc'] : this.data['@house'].toString() + ', ' + this.data['@street'] + ', '+ this.data['@lm'] + ', ' + this.data['@subdist'] + ', ' + this.data['@state']);
       print(data);
 
     } on PlatformException catch (e) {
