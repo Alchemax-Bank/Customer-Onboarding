@@ -60,11 +60,8 @@ class _BookingScreenState extends State<BookingScreen> {
                               color: white,
                             ),
                             onPressed: () {
-                              Navigator.pushReplacement(
-                              context,
-                              PageTransition(
-                                  type: PageTransitionType.leftToRightWithFade,
-                                  child: Home(index:0)));
+                              Navigator.pop(
+                              context);
                             },
                           ),
                         ),
@@ -94,6 +91,20 @@ class _BookingScreenState extends State<BookingScreen> {
             ],
           ),
           SizedBox(height: 20,),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.35,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/images/booking_page.png"),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter),
+              ),
+              child: null
+            ),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -213,7 +224,28 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
 
               Divider(),
-
+              Row(
+                  children: <Widget>[
+                      FlatButton( 
+                        child: Row(
+                          children: <Widget>[
+                              Text("Check in: \nToday"),
+                              Icon(Icons.calendar_today)
+                          ],
+                        ),
+                        onPressed: () {},
+                      ),
+                      FlatButton( 
+                        child: Row(
+                          children: <Widget>[
+                              Text("Check out: \nToday"),
+                              Icon(Icons.calendar_today)
+                          ],
+                        ),
+                        onPressed: () {},
+                      ),
+                  ],
+              ),
               Container(
                 margin: EdgeInsets.only(left: 32, right: 32),
                 child: FlatButton(

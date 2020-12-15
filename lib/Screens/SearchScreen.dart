@@ -387,7 +387,11 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: EdgeInsets.only(left: 32, right:32, top: 16, bottom: 16),
             color: Colors.grey[100],
             child: Text(property.length.toString() + " Results Found", style: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.bold),),
-          ) : Container(),
+          ) : 
+          SpinKitWave(
+            color: primaryColor,
+            size: 50.0,
+          ),
 
           location.length == 3 && property !=null ? Expanded(
             child: Container(
@@ -476,10 +480,18 @@ class _SearchScreenState extends State<SearchScreen> {
                   itemCount: property.length
               ),
             ),
-          ) : SpinKitWave(
-                color: primaryColor,
-                size: 50.0,
-              )
+          ) : Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.4,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/images/result.png"),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter),
+              ),
+              child: null
+            
+          )
         ],
       ),
     );

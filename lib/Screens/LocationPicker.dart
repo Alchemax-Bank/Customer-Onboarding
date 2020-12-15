@@ -80,6 +80,20 @@ class _LocationPickerState extends State<LocationPicker> {
       ),
       body: Column(
         children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.25,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/images/location.png"),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter),
+              ),
+              child: null
+            ),
+          ),
           Container(
             margin: EdgeInsets.only(left: 0.1 * w, right: 0.1 * w, top: 0.05 * h),
             decoration: new BoxDecoration(
