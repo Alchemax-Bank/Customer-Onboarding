@@ -60,7 +60,7 @@ class _LocationPickerState extends State<LocationPicker> {
   }
 
   addData() async {
-    currentLocation.insert(0, placemarks[0].name + ", " + placemarks[0].street);
+    currentLocation.insert(0, placemarks[0].name + ', ' +placemarks[0].subLocality + ', ' +placemarks[0].locality);
     currentLocation.insert(1, _locationData.latitude);
     currentLocation.insert(2, _locationData.longitude);
     currentLocation.length == 3 ? Navigator.pop(context, currentLocation) : addData();

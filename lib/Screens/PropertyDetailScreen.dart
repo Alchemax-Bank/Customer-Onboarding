@@ -212,7 +212,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text("Description", style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
-                          Text(widget.propertyDetail.description, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
+                          Text(widget.propertyDetail.description != null ? widget.propertyDetail.description : "No Description" , style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
                         ],
                       ),
                     ),
