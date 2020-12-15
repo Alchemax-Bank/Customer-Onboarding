@@ -1,8 +1,10 @@
 import 'package:Nirvana/Screens/Drawer.dart';
+import 'package:Nirvana/Screens/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -53,11 +55,17 @@ class _BookingScreenState extends State<BookingScreen> {
                           padding: EdgeInsets.only(right: 8),
                           child: IconButton(
                             icon: new Icon(
-                              Icons.menu,
+                              Icons.navigate_before,
                               size: 24,
                               color: white,
                             ),
-                            onPressed: () => _scaffoldKey.currentState.openDrawer(),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.leftToRightWithFade,
+                                  child: Home(index:0)));
+                            },
                           ),
                         ),
                         title: Text(
@@ -114,7 +122,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             style: TextStyle(fontSize: 18,color: primaryColor, fontWeight: FontWeight.bold), ),
                         SizedBox(height: 8,),
 
-                        Text(widget.propertyDetail.deposit == "No Deposit" ? "No Deposit" :"Deposit: Rs." + widget.propertyDetail.deposit ,
+                        Text(widget.propertyDetail.deposit == "No Deposit" ? "No Deposit" :"Deposit: ₹" + widget.propertyDetail.deposit ,
                             style: TextStyle(fontSize: 14, color: primaryColor), ),
 
                       ],
@@ -182,15 +190,18 @@ class _BookingScreenState extends State<BookingScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text("Ajinkya Taranekar", style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
-                          Text("Owner", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),)
+                          Text(widget.propertyDetail.landlord_name, style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
+                          Text(widget.propertyDetail.landlord_type, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
+                          Text(widget.propertyDetail.landlord_rating.toString() + " ⭐", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),)
                         ],
                       ),
                     ),
 
                     FlatButton(
-                      child : Text("Chat", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
-                      onPressed: (){},
+                      child : Text("Call", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
+                      onPressed: (){
+                        launch("tel://8518076044");
+                      },
                       color: primaryColor,
                     )
                   ],

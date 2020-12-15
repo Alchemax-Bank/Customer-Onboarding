@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   PermissionStatus _permissionGranted;
   LocationData _locationData;
   List<Property> property;
+  List<Property> premiumProperty;
   Map<String, double> origin;
 
   @override
@@ -37,6 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Property> tmp = await getPopularProperties(origin);
     setState(() {
       property = tmp;
+    });
+  }
+  
+  void premiumProperties() async {
+    List<Property> tmp = await getPremiumProperties(origin);
+    setState(() {
+      premiumProperty = tmp;
     });
   }
   currentLoc() async {
@@ -66,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       address = placemarks[0].name + ', ' +placemarks[0].subLocality + ', ' +placemarks[0].locality;
     });
     popularProperties();
+    premiumProperties();
   }
 
   @override
@@ -126,13 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 260,
               color: Colors.transparent,
               margin: EdgeInsets.only(top: 90),
-              child: property != null ? Swiper(
+              child: premiumProperty != null ? Swiper(
                 itemWidth: 340,
                 itemHeight: 400,
                 itemBuilder: (BuildContext context, int index) {
-                  return PropertyCard(property: property[index],);
+                  return PropertyCard(property: premiumProperty[index],);
                 },
-                itemCount: 10,
+                itemCount: premiumProperty.length,
                 viewportFraction: 0.75,
                 pagination: new SwiperPagination(
                     alignment: Alignment(0, 1.4),

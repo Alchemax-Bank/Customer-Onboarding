@@ -30,6 +30,10 @@ class Property{
   var is_accquired;
   var created_at; 
   var updated_at;
+  var landlord_name;
+  var landlord_phone;
+  var landlord_rating;
+  var landlord_type;
 
   Property({
     this.index,
@@ -60,7 +64,11 @@ class Property{
     this.is_verified,
     this.is_accquired,
     this.created_at,
-    this.updated_at
+    this.updated_at,
+    this.landlord_name,
+    this.landlord_phone,
+    this.landlord_rating,
+    this.landlord_type
 });
 }
 

@@ -36,6 +36,20 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavigationDrawer(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.shopping_bag,
+          size: 24,
+          color: white,
+        ),
+        onPressed: () => { 
+          Navigator.pushReplacement(
+          context,
+          PageTransition(
+              type: PageTransitionType.leftToRightWithFade,
+              child: BookingScreen(propertyDetail: widget.propertyDetail)))
+        },
+      ),
       body: SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
         child: Column(
@@ -80,23 +94,6 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.3),
                         ),
-                        trailing: Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: IconButton(
-                            icon: new Icon(
-                              Icons.shopping_bag,
-                              size: 24,
-                              color: white,
-                            ),
-                            onPressed: () => { 
-                              Navigator.pushReplacement(
-                              context,
-                              PageTransition(
-                                  type: PageTransitionType.leftToRightWithFade,
-                                  child: BookingScreen(propertyDetail: widget.propertyDetail)))
-                            },
-                          ),
-                        )
                       ),
                 ),
               ),
@@ -151,11 +148,11 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                           style: TextStyle(color: Colors.grey[500],), overflow: TextOverflow.ellipsis),
                         SizedBox(height: 16,),
 
-                        Text(widget.propertyDetail.price.toString() + " Rs/ month",
+                        Text("₹ "+widget.propertyDetail.price.toString() + " / month",
                             style: TextStyle(fontSize: 18,color: primaryColor, fontWeight: FontWeight.bold), ),
                         SizedBox(height: 8,),
 
-                        Text(widget.propertyDetail.deposit == "No Deposit" ? "No Deposit" :"Deposit: Rs." + widget.propertyDetail.deposit ,
+                        Text(widget.propertyDetail.deposit == "No Deposit" ? "No Deposit" :"Deposit: ₹" + widget.propertyDetail.deposit ,
                             style: TextStyle(fontSize: 14, color: primaryColor), ),
 
                       ],
@@ -210,6 +207,25 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                 margin: EdgeInsets.only(left: 32, right: 32),
                 child: Row(
                   children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Description", style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
+                          Text(widget.propertyDetail.description, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Divider(),
+
+              Container(
+                margin: EdgeInsets.only(left: 32, right: 32),
+                child: Row(
+                  children: <Widget>[
                     CircleAvatar(
                       child: ClipRRect(
                         child: Image.asset("assets/images/avatar.png", fit: BoxFit.contain,),
@@ -223,8 +239,9 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text("Ajinkya Taranekar", style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
-                          Text("Owner", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),)
+                          Text(widget.propertyDetail.landlord_name, style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
+                          Text(widget.propertyDetail.landlord_type, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
+                          Text(widget.propertyDetail.landlord_rating.toString() + " ⭐", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),)
                         ],
                       ),
                     ),

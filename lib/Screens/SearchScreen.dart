@@ -24,6 +24,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Map<String, dynamic> filter;
   int distance = 5;
   int bhk = 1;
+  int rating = 1;
   int price = 1000;
   String type = 'Apartment';
 
@@ -50,7 +51,8 @@ class _SearchScreenState extends State<SearchScreen> {
       "distance": distance,
       "bhk": bhk,
       "price": price,
-      "type": type
+      "type": type,
+      "rating": rating
     };
     print(filter);
     List<Property> tmp = await getFilteredProperties(filter);
@@ -154,7 +156,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                         content: new Container(
                           width: 260.0,
-                          height: 200.0,
+                          height: 260.0,
                           decoration: new BoxDecoration(
                           shape: BoxShape.rectangle,
                           color: const Color(0xFFFFFF),
@@ -184,7 +186,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       .map<DropdownMenuItem<int>>((int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
-                                          child: Text(value.toString()),
+                                          child: Text(value.toString() + ' KM'),
                                         );
                                       })
                                       .toList(),
@@ -212,7 +214,35 @@ class _SearchScreenState extends State<SearchScreen> {
                                       .map<DropdownMenuItem<int>>((int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
-                                          child: Text(value.toString()),
+                                          child: Text(value.toString() + 'BHK'),
+                                        );
+                                      })
+                                      .toList(),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text('Rating: ', style: TextStyle(color: primaryColor,),),
+                                  DropdownButton<int>(
+                                    value: rating,
+                                    icon: Icon(Icons.arrow_downward),
+                                    iconSize: 24,
+                                    elevation: 16,
+                                    style: TextStyle(
+                                      color: grey
+                                    ),
+                                    onChanged: (int newValue) {
+                                      setState(() {
+                                        rating = newValue;
+                                      });
+                                    },
+                                    items: <int>[1, 2, 3, 4, 5]
+                                      .map<DropdownMenuItem<int>>((int value) {
+                                        return DropdownMenuItem<int>(
+                                          value: value,
+                                          child: Text(value.toString() + ' ⭐'),
                                         );
                                       })
                                       .toList(),
@@ -240,7 +270,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       .map<DropdownMenuItem<int>>((int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
-                                          child: Text(value.toString()),
+                                          child: Text('₹ ' + value.toString()),
                                         );
                                       })
                                       .toList(),
@@ -394,7 +424,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Text(property[index].name, style: TextStyle(fontSize: 22, color: Colors.grey[800], fontWeight: FontWeight.bold),),
                                   Text(property[index].location, style: TextStyle(color: Colors.grey[500],), overflow: TextOverflow.ellipsis,),
                                   SizedBox(height: 8,),
-                                  Text("Rs. "+ property[index].price.toString(), style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.bold),),
+                                  Text("₹ "+ property[index].price.toString(), style: TextStyle(fontSize: 18, color: primaryColor, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                             ),

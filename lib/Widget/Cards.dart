@@ -249,11 +249,11 @@ class PropertyCard1 extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
                     this.property.name,
@@ -262,7 +262,6 @@ class PropertyCard1 extends StatelessWidget {
                         color: Color(0xFF465C61),
                         fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.8 - this.property.name.toString().length * 13.5,),
                   IconButton(
                     icon: Icon(Icons.navigation, color:  primaryColor,),
                     onPressed: () {
@@ -316,7 +315,7 @@ class PropertyCard1 extends StatelessWidget {
                       Text(this.property.bathrooms.toString(), style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                     ],
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.75 - 255,),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.75 - 285,),
                   ClipOval(
                     child: Material(
                       color: Colors.blue, // button color
