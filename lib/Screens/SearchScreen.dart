@@ -22,11 +22,12 @@ class _SearchScreenState extends State<SearchScreen> {
   SharedPreferences prefs;
   List<Property> property;
   Map<String, dynamic> filter;
-  int distance = 5;
-  int bhk = 1;
-  int rating = 1;
-  int price = 1000;
-  String type = 'Apartment';
+  int distance;
+  int bhk ;
+  int rating ;
+  int price ;
+  String type ;
+  String landmarks ;
 
   @override
   void initState() {
@@ -52,7 +53,8 @@ class _SearchScreenState extends State<SearchScreen> {
       "bhk": bhk,
       "price": price,
       "type": type,
-      "rating": rating
+      "rating": rating,
+      "landmark": landmarks
     };
     print(filter);
     List<Property> tmp = await getFilteredProperties(filter);
@@ -186,7 +188,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       .map<DropdownMenuItem<int>>((int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
-                                          child: Text(value.toString() + ' KM'),
+                                          child: Text(value == null ? "Select distance" : value.toString() + ' KM'),
                                         );
                                       })
                                       .toList(),
@@ -210,11 +212,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                         this.bhk = newValue;
                                       });
                                     },
-                                    items: <int>[1, 2, 3, 4, 5]
+                                    items: <int>[null, 1, 2, 3, 4, 5]
                                       .map<DropdownMenuItem<int>>((int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
-                                          child: Text(value.toString() + 'BHK'),
+                                          child: Text(value == null ? "Select BHK" : value.toString() + 'BHK'),
                                         );
                                       })
                                       .toList(),
@@ -238,11 +240,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                         this.rating = newValue;
                                       });
                                     },
-                                    items: <int>[1, 2, 3, 4, 5]
+                                    items: <int>[null, 1, 2, 3, 4, 5]
                                       .map<DropdownMenuItem<int>>((int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
-                                          child: Text(value.toString() + ' ⭐'),
+                                          child: Text(value == null ? "Select Rating" : value.toString() + ' ⭐'),
                                         );
                                       })
                                       .toList(),
@@ -266,11 +268,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                         this.price = newValue;
                                       });
                                     },
-                                    items: <int>[1000, 5000, 10000, 50000]
+                                    items: <int>[null, 1000, 5000, 10000, 50000]
                                       .map<DropdownMenuItem<int>>((int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
-                                          child: Text('₹ ' + value.toString()),
+                                          child: Text(value == null ? "Select a price" : '₹ ' + value.toString()),
                                         );
                                       })
                                       .toList(),
@@ -294,11 +296,39 @@ class _SearchScreenState extends State<SearchScreen> {
                                         this.type = newValue;
                                       });
                                     },
-                                    items: <String>['Apartment', 'Independent House', 'Independent Floor', 'Studio Apartment', 'Villa']
+                                    items: <String>[null, 'Apartment', 'Independent House', 'Independent Floor', 'Studio Apartment', 'Villa']
                                       .map<DropdownMenuItem<String>>((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
-                                          child: Text(value),
+                                          child: Text(value == null ? "Select a Type" : value),
+                                        );
+                                      })
+                                      .toList(),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text('Landmarks: ', style: TextStyle(color: primaryColor,),),
+                                  DropdownButton<String>(
+                                    value: this.landmarks,
+                                    icon: Icon(Icons.arrow_downward),
+                                    iconSize: 24,
+                                    elevation: 16,
+                                    style: TextStyle(
+                                      color: grey
+                                    ),
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        this.landmarks = newValue;
+                                      });
+                                    },
+                                    items: <String>[null, 'College', 'School', 'Industry', 'Office', 'Airport', 'Bus Depot', 'Railway', 'Metro', 'City Center']
+                                      .map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value == null ? "Select a Landmark" : value),
                                         );
                                       })
                                       .toList(),

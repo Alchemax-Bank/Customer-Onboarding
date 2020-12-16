@@ -43,7 +43,8 @@ Future<Property> getProperty(var property_id) async {
         landlord_name : data["landlord_name"],
         landlord_phone : data["landlord_phone"],
         landlord_rating : data["landlord_rating"],
-        landlord_type : data["landlord_type"]
+        landlord_type : data["landlord_type"],
+        landmark: data["landmark"]
       );
   } catch (e) {
     print(e);
@@ -91,7 +92,8 @@ Future<List<Property>> getProperties(Map<String, dynamic> order) async {
             landlord_name : data[i]["landlord_name"],
             landlord_phone : data[i]["landlord_phone"],
             landlord_rating : data[i]["landlord_rating"],
-            landlord_type : data[i]["landlord_type"]
+            landlord_type : data[i]["landlord_type"],
+            landmark: data[i]["landmark"]
       );
       reports.add(_property);
     }
@@ -141,8 +143,8 @@ Future<List<Property>> getFilteredProperties(Map<String, dynamic> filter) async 
             landlord_name : data[i]["landlord_name"],
             landlord_phone : data[i]["landlord_phone"],
             landlord_rating : data[i]["landlord_rating"],
-            landlord_type : data[i]["landlord_type"]
-
+            landlord_type : data[i]["landlord_type"],
+            landmark: data[i]["landmark"]
       );
       reports.add(_property);
     }
@@ -195,7 +197,8 @@ Future<List<Property>> getPopularProperties(Map<String, double> origin) async {
             landlord_name : data[i]["landlord_name"],
             landlord_phone : data[i]["landlord_phone"],
             landlord_rating : data[i]["landlord_rating"],
-            landlord_type : data[i]["landlord_type"]
+            landlord_type : data[i]["landlord_type"],
+            landmark: data[i]["landmark"]
       );
       reports.add(_property);
     }
@@ -248,7 +251,8 @@ Future<List<Property>> getPremiumProperties(Map<String, double> origin) async {
             landlord_name : data[i]["landlord_name"],
             landlord_phone : data[i]["landlord_phone"],
             landlord_rating : data[i]["landlord_rating"],
-            landlord_type : data[i]["landlord_type"]
+            landlord_type : data[i]["landlord_type"],
+            landmark: data[i]["landmark"]
       );
       reports.add(_property);
     }
