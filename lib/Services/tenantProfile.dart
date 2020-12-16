@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:Nirvana/constants.dart';
 import 'package:http/http.dart';
 import 'package:Nirvana/models/Tenant.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<Tenant> getTenantProfile(String mobile) async {
   Tenant tenant;
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   try {
     final url = (server+"tenant/check_mobile/"+mobile);
     Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
@@ -25,6 +27,8 @@ Future<Tenant> getTenantProfile(String mobile) async {
       registered_time: data["registered_time"],
       updated_time: data['updated_time']
     );
+    await prefs.setInt('tenant_id', data['id']);
+    await prefs.setString('username', data["username"]);
   } catch (e) {
     print(e);
   }
