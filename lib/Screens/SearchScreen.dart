@@ -157,8 +157,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                         content: new Container(
-                          width: 260.0,
-                          height: 260.0,
+                          width: 300.0,
+                          height: 320.0,
                           decoration: new BoxDecoration(
                           shape: BoxShape.rectangle,
                           color: const Color(0xFFFFFF),
@@ -173,7 +173,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Text('Distance: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<int>(
                                     value: this.distance,
-                                    icon: Icon(Icons.arrow_downward),
+                                    icon: Icon(Icons.arrow_drop_down),
                                     iconSize: 24,
                                     elevation: 16,
                                     style: TextStyle(
@@ -184,7 +184,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         this.distance = newValue;
                                       });
                                     },
-                                    items: <int>[5, 10, 20, 50]
+                                    items: <int>[null, 5, 10, 20, 50]
                                       .map<DropdownMenuItem<int>>((int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
@@ -201,7 +201,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Text('BHK: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<int>(
                                     value: this.bhk,
-                                    icon: Icon(Icons.arrow_downward),
+                                    icon: Icon(Icons.arrow_drop_down),
                                     iconSize: 24,
                                     elevation: 16,
                                     style: TextStyle(
@@ -229,7 +229,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Text('Rating: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<int>(
                                     value: this.rating,
-                                    icon: Icon(Icons.arrow_downward),
+                                    icon: Icon(Icons.arrow_drop_down),
                                     iconSize: 24,
                                     elevation: 16,
                                     style: TextStyle(
@@ -257,7 +257,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Text('Price: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<int>(
                                     value: this.price,
-                                    icon: Icon(Icons.arrow_downward),
+                                    icon: Icon(Icons.arrow_drop_down),
                                     iconSize: 24,
                                     elevation: 16,
                                     style: TextStyle(
@@ -285,7 +285,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Text('Type: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<String>(
                                     value: this.type,
-                                    icon: Icon(Icons.arrow_downward),
+                                    icon: Icon(Icons.arrow_drop_down),
                                     iconSize: 24,
                                     elevation: 16,
                                     style: TextStyle(
@@ -310,10 +310,10 @@ class _SearchScreenState extends State<SearchScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
-                                  Text('Landmarks: ', style: TextStyle(color: primaryColor,),),
+                                  Text('Landmark: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<String>(
                                     value: this.landmarks,
-                                    icon: Icon(Icons.arrow_downward),
+                                    icon: Icon(Icons.arrow_drop_down),
                                     iconSize: 24,
                                     elevation: 16,
                                     style: TextStyle(
@@ -328,7 +328,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                       .map<DropdownMenuItem<String>>((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
-                                          child: Text(value == null ? "Select a Landmark" : value),
+                                          child: Text(value == null ? "Select Landmark" : value),
                                         );
                                       })
                                       .toList(),
