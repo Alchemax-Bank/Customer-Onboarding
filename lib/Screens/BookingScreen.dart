@@ -1,10 +1,13 @@
 import 'package:Nirvana/Screens/Drawer.dart';
 import 'package:Nirvana/Screens/Home.dart';
+import 'package:Nirvana/Services/bookingService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -27,6 +30,31 @@ class _BookingScreenState extends State<BookingScreen> {
     
   }
 
+  DateTime check_in = DateTime.now();
+  DateTime check_out = DateTime.now();
+
+  Future<void> _selectCheckInDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: check_in,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2101,8));
+    if (picked != null && picked != check_in)
+      setState(() {
+        check_in = picked;
+      });
+  }
+  Future<void> _selectCheckOutDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: check_in,
+        firstDate: check_in,
+        lastDate: DateTime(2101,8));
+    if (picked != null && picked != check_out)
+      setState(() {
+        check_out = picked;
+      });
+  }
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context);
@@ -225,24 +253,27 @@ class _BookingScreenState extends State<BookingScreen> {
 
               Divider(),
               Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                       FlatButton( 
+                        color: primaryColor,
                         child: Row(
                           children: <Widget>[
-                              Text("Check in: \nToday"),
-                              Icon(Icons.calendar_today)
+                              Text("Check in: \n${check_in.toLocal().toString().split(" ")[0]}", style: TextStyle(color: Colors.white),),
+                              Icon(Icons.calendar_today, color: Colors.white)
                           ],
                         ),
-                        onPressed: () {},
+                        onPressed: () => _selectCheckInDate(context),
                       ),
                       FlatButton( 
+                        color: primaryColor,
                         child: Row(
                           children: <Widget>[
-                              Text("Check out: \nToday"),
-                              Icon(Icons.calendar_today)
+                              Text("Check out: \n${check_out.toLocal().toString().split(" ")[0]}", style: TextStyle(color: Colors.white),),
+                              Icon(Icons.calendar_today, color: Colors.white)
                           ],
                         ),
-                        onPressed: () {},
+                        onPressed: () => _selectCheckOutDate(context),
                       ),
                   ],
               ),
@@ -250,8 +281,36 @@ class _BookingScreenState extends State<BookingScreen> {
                 margin: EdgeInsets.only(left: 32, right: 32),
                 child: FlatButton(
                   child : Text("Book", style: TextStyle(color: Colors.grey[100], fontSize: 16, fontWeight: FontWeight.w600), ),
-                  onPressed: (){
+                  onPressed: () async {
                     //booking algo here
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    var tenant_id = prefs.getInt("tenant_id");
+                    var info = {
+                      "property_id" : widget.propertyDetail.index,
+                      "tenant_id": tenant_id,
+                      "check_in": check_in.toLocal().toString().split(' ')[0],
+                      "check_out": check_out.toLocal().toString().split(' ')[0],
+                    };
+                    var book = await bookAProperty(info);
+
+                    if (book!= null){
+                      await prefs.setBool("booking", true);
+                      print(book);
+                      Fluttertoast.showToast(
+                          msg: "Property Booked",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM, 
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.grey[200],
+                          textColor: primaryColor,
+                          fontSize: 12.0
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.rightToLeftWithFade,
+                            child: Home(index: 0)));
+                    }
                   },
                   color: primaryColor,
                 )
