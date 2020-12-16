@@ -305,7 +305,7 @@ class _ProfileState extends State<ProfileScreen> {
                               icon: Icon(Icons.calendar_today),
                             ),
                             SizedBox(width: 20.0,),
-                            Text("${dob.toLocal()}".split(' ')[0]),
+                            Text("${this.dob.toLocal()}".split(' ')[0]),
                           ],
                         ),
                       ),
