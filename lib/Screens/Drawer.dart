@@ -1,4 +1,5 @@
 import 'package:Nirvana/Screens/GharScreen.dart';
+import 'package:Nirvana/Screens/PreviousBookingScreen.dart';
 import 'package:Nirvana/Screens/SearchScreen.dart';
 import 'package:Nirvana/Screens/SettingScreen.dart';
 import 'package:Nirvana/Services/Login.dart';
@@ -74,8 +75,18 @@ class NavigationDrawer extends StatelessWidget {
                     type: PageTransitionType.leftToRightWithFade,
                     child: Home(index: 2))),
          ),
+         createDrawerBodyItem(
+           icon: Icons.backpack,
+           title: 'Your Bookings',
+           onTap: () =>
+               Navigator.pushReplacement(
+                context,
+                PageTransition(
+                    type: PageTransitionType.leftToRightWithFade,
+                    child: PreviousBookingScreen())),
+         ),
          ListTile(
-           title: Text('App version 1.0.0'),
+           title: Text('App version .0.0.1'),
            onTap: () {},
          ),
          ListTile(

@@ -41,8 +41,8 @@ Future<Booking> getCurrentBooking(var tenant_id) async {
   return booking;
 }
 
-Future<List<Booking>> allBooking(var tenant_id) async {
-  List<Booking> booking;
+Future<List<Booking>> getAllBooking(var tenant_id) async {
+  List<Booking> booking = [];
   try {
     final url = (server+"booking/all/" + tenant_id.toString());
     Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
@@ -51,20 +51,20 @@ Future<List<Booking>> allBooking(var tenant_id) async {
     if (status){
       List data = jsonDecode(response.body)["data"];
       for (int i = 0; i < data.length; i++) {
-            Booking _booking = new Booking(
-                id: data[i]["id"],
-                tenant_id: data[i]["tenant_id"],
-                property_id: data[i]["property_id"],
-                check_in: data[i]["check_in"],
-                check_out: data[i]["check_out"],
-                comments: data[i]["comments"],
-                images: data[i]["images"],
-                created_time: data[i]["created_time"],
-                updated_time: data[i]["updated_time"]
-            );
-            booking.add(_booking);
-          }
-    }
+          Booking _booking = new Booking(
+              id: data[i]["id"],
+              tenant_id: data[i]["tenant_id"],
+              property_id: data[i]["property_id"],
+              check_in: data[i]["check_in"],
+              check_out: data[i]["check_out"],
+              comments: data[i]["comments"],
+              images: data[i]["images"],
+              created_time: data[i]["created_time"],
+              updated_time: data[i]["updated_time"]
+          );
+          booking.add(_booking);
+        }
+      }
     } catch (e) {
     print(e);
   }
