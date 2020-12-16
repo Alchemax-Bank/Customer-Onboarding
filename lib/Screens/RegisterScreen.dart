@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:Nirvana/Screens/OTPScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/Screens/LoginScreen.dart';
@@ -216,7 +220,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           // padding: EdgeInsets.only(bottom: 10),
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(35.0)),
-                          onPressed: () {
+                          onPressed: () async {
+                            final url = (server+"tenant/check_mobile/"+this.mobileNo);
+                            Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
+                            print(response.body);
+                            bool status = jsonDecode(response.body)["status"];
+                            if (status == true){
+                              print("Old User Login");
+                                  Fluttertoast.showToast(
+                                    msg: "Seems you are already registered, please login",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM, 
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.grey[200],
+                                    textColor: primaryColor,
+                                    fontSize: 12.0
+                                );
+                            }
+                            else
                             Navigator.pushReplacement(
                                 context,
                                 PageTransition(
