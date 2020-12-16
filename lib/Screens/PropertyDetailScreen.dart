@@ -1,13 +1,19 @@
 import 'package:Nirvana/Screens/Drawer.dart';
 import 'package:Nirvana/Screens/Home.dart';
 import 'package:Nirvana/Screens/BookingScreen.dart';
+import 'package:Nirvana/Services/bookingService.dart';
+import 'package:Nirvana/Services/tenantProfile.dart';
+import 'package:Nirvana/models/Booking.dart';
+import 'package:Nirvana/models/Tenant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:Nirvana/Widget/Cards.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PropertyDetailScreen extends StatefulWidget {
@@ -19,6 +25,7 @@ class PropertyDetailScreen extends StatefulWidget {
 
 class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  Tenant tenant;
   
   @override
   void initState() {
@@ -27,7 +34,23 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   }
   
   void initialise() async {
-    
+    checkBooking();
+  }
+
+
+  Booking booking;
+
+  Future checkBooking() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var mobile = prefs.getString("mobile");
+    Tenant tmp = await getTenantProfile(mobile);
+    Booking book = await getCurrentBooking(tmp.id);
+
+    setState(() {
+      tenant = tmp;
+      booking = book;
+    });
+
   }
 
   @override
@@ -42,12 +65,23 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
           size: 24,
           color: white,
         ),
-        onPressed: () => { 
-          Navigator.pushReplacement(
-          context,
-          PageTransition(
-              type: PageTransitionType.leftToRightWithFade,
-              child: BookingScreen(propertyDetail: widget.propertyDetail)))
+        onPressed: () { 
+          if (booking == null)
+            Navigator.pushReplacement(
+            context,
+            PageTransition(
+                type: PageTransitionType.leftToRightWithFade,
+                child: BookingScreen(propertyDetail: widget.propertyDetail)));
+          else
+            Fluttertoast.showToast(
+                msg: "You have already booked a house",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM, 
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.grey[200],
+                textColor: primaryColor,
+                fontSize: 12.0
+            );
         },
       ),
       body: SingleChildScrollView(
