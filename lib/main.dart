@@ -13,6 +13,7 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SplashScreen()
     );
   }
@@ -68,9 +69,21 @@ class _SplashScreenState extends State<SplashScreen> {
               color: Color.fromRGBO(0, 152, 218, 0.85),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage("assets/images/toran.png"),
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter),
+                    ),
+                    child: null
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -105,7 +118,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   ],
                 ),
               ],
-            )),
+            )
+          ),
       ],
     ));
   }
