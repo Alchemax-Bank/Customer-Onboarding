@@ -6,7 +6,7 @@ import 'package:Nirvana/models/Property.dart';
 Future<Property> getProperty(var property_id) async {
   Property property;
   try {
-    final url = (server+"/property/" + property_id);
+    final url = (server+"properties/" + property_id.toString());
     Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
     print(response.body);
     Map<String, dynamic> data = jsonDecode(response.body)["data"];
@@ -54,7 +54,7 @@ Future<Property> getProperty(var property_id) async {
 Future<List<Property>> getProperties(Map<String, dynamic> order) async {
   List<Property> reports = [];
   try {
-    final url = (server+"/properties");
+    final url = (server+"properties");
     Response response = await post(Uri.encodeFull(url), body: json.encode(order), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
     List data = jsonDecode(response.body)["data"];
     for (int i = 0; i < data.length; i++) {
