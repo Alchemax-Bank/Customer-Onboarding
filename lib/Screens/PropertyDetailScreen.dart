@@ -178,17 +178,19 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                         ),
 
                         SizedBox(height: 8,),
-                        Text(widget.propertyDetail.location,
-                          style: TextStyle(color: Colors.grey[500],), overflow: TextOverflow.ellipsis),
+                        Container(
+                          width: media.size.width-64-48,
+                          child: Text(widget.propertyDetail.location,
+                            style: TextStyle(fontSize: 16, color: Colors.grey[500],)),          
+                        ),
                         SizedBox(height: 16,),
 
                         Text("₹ "+widget.propertyDetail.price.toString() + " / month",
-                            style: TextStyle(fontSize: 18,color: primaryColor, fontWeight: FontWeight.bold), ),
+                            style: TextStyle(fontSize: 14,color: primaryColor, fontWeight: FontWeight.bold), ),
                         SizedBox(height: 8,),
 
                         Text(widget.propertyDetail.deposit == "No Deposit" ? "No Deposit" :"Deposit: ₹" + widget.propertyDetail.deposit ,
-                            style: TextStyle(fontSize: 14, color: primaryColor), ),
-
+                            style: TextStyle(fontSize: 12, color: primaryColor), ),
                       ],
                     ),
 

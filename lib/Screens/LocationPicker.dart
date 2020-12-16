@@ -84,7 +84,7 @@ class _LocationPickerState extends State<LocationPicker> {
             alignment: Alignment.topCenter,
             child: Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.25,
+              height: MediaQuery.of(context).size.height * 0.20,
               decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage("assets/images/location.png"),
@@ -175,7 +175,10 @@ class _LocationPickerState extends State<LocationPicker> {
                   ),
                   itemCount: snapshot.data.length,
                 )
-              ) : Container(child: Text('Loading...')),
+              ) : SpinKitThreeBounce(
+                  color: primaryColor,
+                  size: 50.0,
+                ),
           )
         ],
       ),
