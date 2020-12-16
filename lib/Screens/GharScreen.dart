@@ -1,11 +1,18 @@
 import 'package:Nirvana/Screens/Drawer.dart';
+import 'package:Nirvana/Services/bookingService.dart';
+import 'package:Nirvana/Services/propertyList.dart';
+import 'package:Nirvana/Services/tenantProfile.dart';
+import 'package:Nirvana/models/Tenant.dart';
+import 'package:Nirvana/models/Booking.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:Nirvana/Widget/Cards.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GharScreen extends StatefulWidget {
   @override
@@ -14,6 +21,8 @@ class GharScreen extends StatefulWidget {
 
 class _GharScreenState extends State<GharScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  Tenant tenant;
+  Property property;
   
   @override
   void initState() {
@@ -26,14 +35,23 @@ class _GharScreenState extends State<GharScreen> {
   }
 
 
-  bool booking = false;
+  Booking booking;
 
   Future checkBooking() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool _booking = (prefs.getBool('booking') == null);
+    var mobile = prefs.getString("mobile");
+    Tenant tmp = await getTenantProfile(mobile);
+    Booking book = await getCurrentBooking(tmp.id);
+    Property prop;
+    if (book != null)
+      prop = await getProperty(book.property_id);
+
     setState(() {
-      booking = _booking;
+      tenant = tmp;
+      booking = book;
+      property = prop;
     });
+
   }
 
   @override
@@ -42,7 +60,7 @@ class _GharScreenState extends State<GharScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavigationDrawer(),
-      body: SingleChildScrollView(
+      body: tenant != null ? SingleChildScrollView(
         // physics: BouncingScrollPhysics(),
         child: Column(
         children: <Widget>[
@@ -94,7 +112,7 @@ class _GharScreenState extends State<GharScreen> {
                       ),
                 ),
               ),
-              booking ? Container() : Container(
+              booking == null ? Container() : Container(
                 height: 260,
                 color: Colors.transparent,
                 margin: EdgeInsets.only(top: 90),
@@ -121,7 +139,7 @@ class _GharScreenState extends State<GharScreen> {
             ],
           ),
           SizedBox(height: 20,),
-          booking ? Container(
+          booking == null ? Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.4,
             decoration: BoxDecoration(
@@ -154,24 +172,30 @@ class _GharScreenState extends State<GharScreen> {
                       children: <Widget>[
                         Container(
                           width: media.size.width-64-48,
-                          child: Text("Abc Tower, 3 Bed Rooms, Luxury Apartement",
+                          child: Text(property.name,
                             style: TextStyle(fontSize: 18, color: Colors.grey[800], fontWeight: FontWeight.bold),
                           ),
                         ),
 
                         SizedBox(height: 8,),
-                        Text("Shalimar Township, \nIndore - 452010",
+                        Text(property.location,
                           style: TextStyle(color: Colors.grey[500],), overflow: TextOverflow.ellipsis),
                         SizedBox(height: 16,),
 
-                        Text("3000 Rs /day",
+                        Text("₹ "+property.price.toString() + " / month",
                             style: TextStyle(fontSize: 18,color: primaryColor, fontWeight: FontWeight.bold), ),
+                        SizedBox(height: 8,),
+
+                        Text(property.deposit == "No Deposit" ? "No Deposit" :"Deposit: ₹" + property.deposit ,
+                            style: TextStyle(fontSize: 14, color: primaryColor), ),
 
                       ],
                     ),
 
                     IconButton(
-                      icon: Icon(Icons.navigation), onPressed: () {  },
+                      icon: Icon(Icons.navigation, color: primaryColor,), onPressed: () {  
+                          _launchMapsUrl(property.latitude,property.longitude);
+                      },
                     )
                   ],
                 ),
@@ -184,23 +208,23 @@ class _GharScreenState extends State<GharScreen> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Icon(Icons.people, size: 12, color: Colors.grey[600],),
+                        Icon(Icons.house, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text("5 people", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text(property.area_in_sqft.toString() + ' area' , style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                     Row(
                       children: <Widget>[
-                        Icon(Icons.local_offer, size: 12, color: Colors.grey[600],),
+                        Icon(Icons.king_bed, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text("2 Beds", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text(property.numberOfRooms.toString() + " Beds", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                     Row(
                       children: <Widget>[
                         Icon(Icons.airline_seat_legroom_reduced, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text("2 Bathrooms", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text(property.bathrooms, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                   ],
@@ -209,6 +233,25 @@ class _GharScreenState extends State<GharScreen> {
 
               SizedBox(
                 height: 8,
+              ),
+
+              Divider(),
+
+              Container(
+                margin: EdgeInsets.only(left: 32, right: 32),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Description", style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
+                          Text(property.description != null ? property.description : "No Description" , style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               Divider(),
@@ -230,15 +273,18 @@ class _GharScreenState extends State<GharScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text("Ajinkya Taranekar", style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
-                          Text("Owner", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),)
+                          Text(property.landlord_name, style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
+                          Text(property.landlord_type, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
+                          Text(property.landlord_rating.toString() + " ⭐", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),)
                         ],
                       ),
                     ),
 
                     FlatButton(
                       child : Text("Call", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
-                      onPressed: (){},
+                      onPressed: (){
+                        launch("tel://8518076044");
+                      },
                       color: primaryColor,
                     )
                   ],
@@ -318,7 +364,22 @@ class _GharScreenState extends State<GharScreen> {
           ),
           ],
         ),
-      ),
+      ) : SpinKitDoubleBounce(
+            color: primaryColor,
+            size: 50.0,
+          ),
     );
+  }
+  void _launchMapsUrl(double lat, double lon) async {
+    // var latitude = origin['latitude'];
+    // var longitude = origin['longitude'];
+    
+    final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lon';
+    print(url);
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
