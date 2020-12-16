@@ -19,7 +19,7 @@ class BookingScreen extends StatefulWidget {
 
 class _BookingScreenState extends State<BookingScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  
+  bool booking = false;
   @override
   void initState() {
     super.initState();
@@ -88,8 +88,11 @@ class _BookingScreenState extends State<BookingScreen> {
                               color: white,
                             ),
                             onPressed: () {
-                              Navigator.pop(
-                              context);
+                              Navigator.pushReplacement(
+                                context,
+                                PageTransition(
+                                    type: PageTransitionType.leftToRightWithFade,
+                                    child: Home(index: 0)));
                             },
                           ),
                         ),
@@ -183,23 +186,23 @@ class _BookingScreenState extends State<BookingScreen> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Icon(Icons.people, size: 12, color: Colors.grey[600],),
+                        Icon(Icons.house, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text("5 people", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text(widget.propertyDetail.area_in_sqft.toString() + ' area' , style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                     Row(
                       children: <Widget>[
-                        Icon(Icons.local_offer, size: 12, color: Colors.grey[600],),
+                        Icon(Icons.king_bed, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text("2 Beds", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text(widget.propertyDetail.numberOfRooms.toString() + " Beds", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                     Row(
                       children: <Widget>[
                         Icon(Icons.airline_seat_legroom_reduced, size: 12, color: Colors.grey[600],),
                         SizedBox(width: 4,),
-                        Text("2 Bathrooms", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                        Text(widget.propertyDetail.bathrooms, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                       ],
                     ),
                   ],
@@ -208,6 +211,25 @@ class _BookingScreenState extends State<BookingScreen> {
 
               SizedBox(
                 height: 8,
+              ),
+
+              Divider(),
+
+              Container(
+                margin: EdgeInsets.only(left: 32, right: 32),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Description", style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
+                          Text(widget.propertyDetail.description != null ? widget.propertyDetail.description : "No Description" , style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               Divider(),
@@ -252,69 +274,128 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
 
               Divider(),
+
+              SizedBox(
+                height: 20,
+              ),
+
               Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                       FlatButton( 
-                        color: primaryColor,
+                        textColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: primaryColor)
+                          ),
                         child: Row(
                           children: <Widget>[
-                              Text("Check in: \n${check_in.toLocal().toString().split(" ")[0]}", style: TextStyle(color: Colors.white),),
-                              Icon(Icons.calendar_today, color: Colors.white)
+                              Text("Check in: \n${check_in.toLocal().toString().split(" ")[0]}", style: TextStyle(color: primaryColor),),
+                              Icon(Icons.calendar_today, color: primaryColor)
                           ],
                         ),
                         onPressed: () => _selectCheckInDate(context),
                       ),
                       FlatButton( 
-                        color: primaryColor,
+                        textColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: primaryColor)
+                          ),
                         child: Row(
                           children: <Widget>[
-                              Text("Check out: \n${check_out.toLocal().toString().split(" ")[0]}", style: TextStyle(color: Colors.white),),
-                              Icon(Icons.calendar_today, color: Colors.white)
+                              Text("Check out: \n${check_out.toLocal().toString().split(" ")[0]}", style: TextStyle(color: primaryColor),),
+                              Icon(Icons.calendar_today, color: primaryColor)
                           ],
                         ),
                         onPressed: () => _selectCheckOutDate(context),
                       ),
                   ],
               ),
-              Container(
-                margin: EdgeInsets.only(left: 32, right: 32),
-                child: FlatButton(
-                  child : Text("Book", style: TextStyle(color: Colors.grey[100], fontSize: 16, fontWeight: FontWeight.w600), ),
-                  onPressed: () async {
-                    //booking algo here
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                    var tenant_id = prefs.getInt("tenant_id");
-                    var info = {
-                      "property_id" : widget.propertyDetail.index,
-                      "tenant_id": tenant_id,
-                      "check_in": check_in.toLocal().toString().split(' ')[0],
-                      "check_out": check_out.toLocal().toString().split(' ')[0],
-                    };
-                    var book = await bookAProperty(info);
+              
+              SizedBox(
+                height: 20,
+              ),
 
-                    if (book!= null){
-                      await prefs.setBool("booking", true);
-                      print(book);
-                      Fluttertoast.showToast(
-                          msg: "Property Booked",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM, 
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.grey[200],
-                          textColor: primaryColor,
-                          fontSize: 12.0
-                      );
-                      Navigator.pushReplacement(
-                        context,
-                        PageTransition(
-                            type: PageTransitionType.rightToLeftWithFade,
-                            child: Home(index: 0)));
-                    }
-                  },
-                  color: primaryColor,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(left: 32, right: 32),
+                  child: FlatButton(
+                    child : Text("Book", style: TextStyle(color: Colors.grey[100], fontSize: 16, fontWeight: FontWeight.w600), ),
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Proceed with booking ? ",
+                              style: TextStyle(
+                                color: primaryColor
+                              ),
+                            ),
+                            content: Text("Should we continue with booking ..."),
+                            actions: [
+                              FlatButton(
+                                child: Text("Cancel",
+                                  style: TextStyle(
+                                    color: Colors.red
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              FlatButton(
+                                child: Text("OK",
+                                  style: TextStyle(
+                                    color: primaryColor
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    booking = true;
+                                  });
+                                },
+                              )
+                            ],
+                          );
+                        }
+                      );       
+                      if (booking){ 
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        var tenant_id = prefs.getInt("tenant_id");
+                        var info = {
+                          "property_id" : widget.propertyDetail.index,
+                          "tenant_id": tenant_id,
+                          "check_in": check_in.toLocal().toString().split(' ')[0],
+                          "check_out": check_out.toLocal().toString().split(' ')[0],
+                        };
+                        var book = await bookAProperty(info);
+
+                        if (book!= null){
+                          await prefs.setBool("booking", true);
+                          print(book);
+                          Fluttertoast.showToast(
+                              msg: "Property Booked",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM, 
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.grey[200],
+                              textColor: primaryColor,
+                              fontSize: 12.0
+                          );
+                          Navigator.pushReplacement(
+                            context,
+                            PageTransition(
+                                type: PageTransitionType.rightToLeftWithFade,
+                                child: Home(index: 0)));
+                        }
+                      }
+                    },
+                    color: primaryColor,
+                  )
                 )
-              )
+              ),
             ],
           ),
           ],
