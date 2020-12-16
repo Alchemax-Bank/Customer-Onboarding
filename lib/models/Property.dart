@@ -34,7 +34,8 @@ class Property{
   var landlord_phone;
   var landlord_rating;
   var landlord_type;
-
+  var landmark;
+  
   Property({
     this.index,
     this.name,
@@ -68,7 +69,8 @@ class Property{
     this.landlord_name,
     this.landlord_phone,
     this.landlord_rating,
-    this.landlord_type
+    this.landlord_type,
+    this.landmark
 });
 }
 
