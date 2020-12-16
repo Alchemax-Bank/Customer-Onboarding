@@ -157,15 +157,16 @@ class _LocationPickerState extends State<LocationPicker> {
                   itemBuilder: (context, index) => GestureDetector(
                     onTap: () {
                       setState(() {
-                        currentLocation.insert(0, snapshot.data[index]['address']['freeformAddress'].toString());
+                        currentLocation.insert(0, snapshot.data[index]['poi']['name'].toString() + ', ' + snapshot.data[index]['address']['freeformAddress'].toString());
                         currentLocation.insert(1, snapshot.data[index]['position']['lat']);
                         currentLocation.insert(2, snapshot.data[index]['position']['lon']);
                       });
+                      print(snapshot.data[index]);
                       Navigator.pop(context, currentLocation);
                     },
                     child: Container(
                       padding: EdgeInsets.all(15),
-                      child: Text(snapshot.data[index]['address']['freeformAddress'].toString(),
+                      child: Text(snapshot.data[index]['poi']['name'].toString() + ', ' + snapshot.data[index]['address']['freeformAddress'].toString(),
                         style: TextStyle(
                           fontSize: 16
                         )
