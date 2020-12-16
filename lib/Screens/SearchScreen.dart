@@ -170,7 +170,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 children: <Widget>[
                                   Text('Distance: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<int>(
-                                    value: distance,
+                                    value: this.distance,
                                     icon: Icon(Icons.arrow_downward),
                                     iconSize: 24,
                                     elevation: 16,
@@ -179,7 +179,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                     onChanged: (int newValue) {
                                       setState(() {
-                                        distance = newValue;
+                                        this.distance = newValue;
                                       });
                                     },
                                     items: <int>[5, 10, 20, 50]
@@ -198,7 +198,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 children: <Widget>[
                                   Text('BHK: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<int>(
-                                    value: bhk,
+                                    value: this.bhk,
                                     icon: Icon(Icons.arrow_downward),
                                     iconSize: 24,
                                     elevation: 16,
@@ -207,7 +207,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                     onChanged: (int newValue) {
                                       setState(() {
-                                        bhk = newValue;
+                                        this.bhk = newValue;
                                       });
                                     },
                                     items: <int>[1, 2, 3, 4, 5]
@@ -226,7 +226,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 children: <Widget>[
                                   Text('Rating: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<int>(
-                                    value: rating,
+                                    value: this.rating,
                                     icon: Icon(Icons.arrow_downward),
                                     iconSize: 24,
                                     elevation: 16,
@@ -235,7 +235,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                     onChanged: (int newValue) {
                                       setState(() {
-                                        rating = newValue;
+                                        this.rating = newValue;
                                       });
                                     },
                                     items: <int>[1, 2, 3, 4, 5]
@@ -254,7 +254,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 children: <Widget>[
                                   Text('Price: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<int>(
-                                    value: price,
+                                    value: this.price,
                                     icon: Icon(Icons.arrow_downward),
                                     iconSize: 24,
                                     elevation: 16,
@@ -263,7 +263,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                     onChanged: (int newValue) {
                                       setState(() {
-                                        price = newValue;
+                                        this.price = newValue;
                                       });
                                     },
                                     items: <int>[1000, 5000, 10000, 50000]
@@ -282,7 +282,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 children: <Widget>[
                                   Text('Type: ', style: TextStyle(color: primaryColor,),),
                                   DropdownButton<String>(
-                                    value: type,
+                                    value: this.type,
                                     icon: Icon(Icons.arrow_downward),
                                     iconSize: 24,
                                     elevation: 16,
@@ -291,7 +291,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                     onChanged: (String newValue) {
                                       setState(() {
-                                        type = newValue;
+                                        this.type = newValue;
                                       });
                                     },
                                     items: <String>['Apartment', 'Independent House', 'Independent Floor', 'Studio Apartment', 'Villa']
