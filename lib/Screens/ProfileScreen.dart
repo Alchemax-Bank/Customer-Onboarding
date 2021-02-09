@@ -323,11 +323,15 @@ class _ProfileState extends State<ProfileScreen> {
                     //update account
                     var profile ={
                       "id": widget.tenant.id,
+                      "phoneNo": widget.tenant.phone_no,
+                      "firebaseId": widget.tenant.firebase_id,
+                      "deviceToken": widget.tenant.device_token,
                       "username" : this.username,
                       "dob" : this.dob.toLocal().toString().split(' ')[0],
                       "gender" : this.gender,
                       "address" : this.address,
                       "nationality" : "Indian",
+                      "verified": 1
                     };
                     var tmp = updateTenantProfile(profile);
                     setState((){

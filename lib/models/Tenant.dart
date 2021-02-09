@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'package:Nirvana/models/Property.dart';
 
 class Tenant{
   var username;
@@ -14,6 +15,8 @@ class Tenant{
   var device_token;
   var registered_time;
   var updated_time;
+  var property_id;
+
   Tenant({
     this.id,
     this.username,
@@ -27,6 +30,7 @@ class Tenant{
     this.gender,
     this.nationality,
     this.registered_time,
-    this.updated_time
+    this.updated_time,
+    this.property_id
     });
 }

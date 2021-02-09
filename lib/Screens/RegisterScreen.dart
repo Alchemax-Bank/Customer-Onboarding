@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:Nirvana/Screens/OTPScreen.dart';
+import 'package:Nirvana/Services/tenantProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/Screens/LoginScreen.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -18,6 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String firstName;
   String lastName;
   String mobileNo;
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
     
   @override
   Widget build(BuildContext context) {
@@ -216,33 +219,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: 45,
-                        child: RaisedButton(
-                          // padding: EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
+                        child: RoundedLoadingButton(
+                          controller: _btnController, 
                           onPressed: () async {
-                            final url = (server+"tenant/check_mobile/"+this.mobileNo);
-                            Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json"});
-                            print(response.body);
-                            bool status = jsonDecode(response.body)["status"];
-                            if (status == true){
-                              print("Old User Login");
-                                  Fluttertoast.showToast(
-                                    msg: "Seems you are already registered, please login",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM, 
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.grey[200],
-                                    textColor: primaryColor,
-                                    fontSize: 12.0
-                                );
+                            if (this.mobileNo.toString().length != 10){
+                              Fluttertoast.showToast(
+                                msg: "Enter your 10 digit number only",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM, 
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.grey[200],
+                                textColor: Colors.red,
+                                fontSize: 12.0
+                              );
                             }
-                            else
-                            Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                    type: PageTransitionType.leftToRightWithFade,
-                                    child: OTPScreen(mobileNo: this.mobileNo, mode: "Register")));
+                            else{
+                              var tenant = await getTenantProfile(this.mobileNo.toString());
+                              if (tenant != null){
+                                print("Old User Login");
+                                    Fluttertoast.showToast(
+                                      msg: "Seems you are already registered, please login",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM, 
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.grey[200],
+                                      textColor: primaryColor,
+                                      fontSize: 12.0
+                                  );
+                              }
+                              else{
+                                _btnController.success();
+                                Navigator.pushReplacement(
+                                    context,
+                                    PageTransition(
+                                        type: PageTransitionType.leftToRightWithFade,
+                                        child: OTPScreen(mobileNo: this.mobileNo, mode: "Register")));
+                              }
+                            }
                           },
                           color: primaryColor,
                           child: RichText(

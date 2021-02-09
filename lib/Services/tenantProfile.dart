@@ -11,21 +11,57 @@ Future<Tenant> getTenantProfile(String mobile) async {
     final url = (server+"tenant/check_mobile/"+mobile);
     Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
     print(response.body);
-    Map<String, dynamic> data = jsonDecode(response.body)["data"];
+    bool status = jsonDecode(response.body)["status"];
+    if (status){
+      Map<String, dynamic> data = jsonDecode(response.body)["data"];
+      tenant = new Tenant(
+        id: data['id'],
+        username: data["username"],
+        address: data["address"], 
+        phone_no: data["phoneNo"].toString(), 
+        is_verified: data['verified'],
+        budget: data["budget"],
+        device_token: data["deviceToken"],
+        dob: data["dob"],
+        firebase_id: data["firebaseId"],
+        gender: data["gender"],
+        nationality: data["nationality"],
+        registered_time: data["registeredTime"],
+        updated_time: data['updatedTime'],
+        property_id: data['property'] != null ? data['property']['id']: null 
+      );
+      await prefs.setInt('tenant_id', data['id']);
+      await prefs.setString('username', data["username"]);
+    }
+  } catch (e) {
+    print(e);
+  }
+  return tenant;
+}
+
+Future<Tenant> getTenantProfileById(String id) async {
+  Tenant tenant;
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  try {
+    final url = (server+"tenant/get/"+id);
+    Response response = await get(Uri.encodeFull(url), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
+    print(response.body);
+    Map<String, dynamic> data = jsonDecode(response.body);
     tenant = new Tenant(
       id: data['id'],
       username: data["username"],
       address: data["address"], 
-      phone_no: data["phone_no"].toString(), 
-      is_verified: data['is_verified'],
+      phone_no: data["phoneNo"].toString(), 
+      is_verified: data['verified'],
       budget: data["budget"],
-      device_token: data["device_token"],
+      device_token: data["deviceToken"],
       dob: data["dob"],
-      firebase_id: data["firebase_id"],
+      firebase_id: data["firebaseId"],
       gender: data["gender"],
       nationality: data["nationality"],
-      registered_time: data["registered_time"],
-      updated_time: data['updated_time']
+      registered_time: data["registeredTime"],
+      updated_time: data['updatedTime'],
+      property_id: data['property']['id']
     );
     await prefs.setInt('tenant_id', data['id']);
     await prefs.setString('username', data["username"]);
@@ -34,29 +70,31 @@ Future<Tenant> getTenantProfile(String mobile) async {
   }
   return tenant;
 }
+
 Future<Tenant> updateTenantProfile(Map<String, dynamic> profile) async {
   Tenant tenant;
   try {
     final url = (server+"tenant/update");
     print(profile);
     
-    Response response = await post(Uri.encodeFull(url), body: json.encode(profile), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
+    Response response = await put(Uri.encodeFull(url), body: json.encode(profile), headers: {"Content-Type": "application/json", "Connection": "Keep-Alive"},);
     print(response.body);
     Map<String, dynamic> data = jsonDecode(response.body)["data"];
     tenant = new Tenant(  
       id: data['id'],
       username: data["username"],
       address: data["address"], 
-      phone_no: data["phone_no"].toString(), 
-      is_verified: data['is_verified'],
+      phone_no: data["phoneNo"].toString(), 
+      is_verified: data['verified'],
       budget: data["budget"],
-      device_token: data["device_token"],
+      device_token: data["deviceToken"],
       dob: data["dob"],
-      firebase_id: data["firebase_id"],
+      firebase_id: data["firebaseId"],
       gender: data["gender"],
       nationality: data["nationality"],
-      registered_time: data["registered_time"],
-      updated_time: data['updated_time']
+      registered_time: data["registeredTime"],
+      updated_time: data['updatedTime'],
+      property_id: data['property']['id']
     );
   } catch (e) {
     print(e);

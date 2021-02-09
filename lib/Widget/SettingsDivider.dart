@@ -11,7 +11,7 @@ class SettingsDivider extends StatelessWidget {
       Expanded(
         child: Container(
           alignment: Alignment.topLeft,
-          child: Text(this.dividerTitle, style: TextStyle(color: Colors.black)),
+          child: Text(this.dividerTitle, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(color: Colors.white),
         ),

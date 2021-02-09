@@ -1,4 +1,5 @@
 import 'package:Nirvana/Screens/Drawer.dart';
+import 'package:Nirvana/Screens/NotificationScreen.dart';
 import 'package:Nirvana/Services/tenantProfile.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Tenant.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:Nirvana/Screens/ProfileScreen.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:Nirvana/Services/Login.dart';
 
 class SettingScreen extends StatefulWidget {
   @override
@@ -86,7 +88,13 @@ class _SettingScreenState extends State<SettingScreen> {
                               size: 24,
                               color: white,
                             ),
-                            onPressed: () => {},
+                            onPressed: () => {
+                              Navigator.pushReplacement(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.rightToLeftWithFade,
+                                  child: NotificationScreen()))
+                            },
                           ),
                         )
                       ),
@@ -103,7 +111,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       flex: 1,
                       child: Container(
                         child: Text("Name",
-                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                            style: TextStyle(color: primaryColor, fontSize: 15)),
                       ),
                     ),
                     Expanded(
@@ -123,13 +131,54 @@ class _SettingScreenState extends State<SettingScreen> {
                       flex: 1,
                       child: Container(
                         child: Text("Phone Number",
-                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                            style: TextStyle(color: primaryColor, fontSize: 15)),
                       ),
                     ),
                     Expanded(
                       flex: 1,
                       child: Container(
                         child: Text("+91 " + this.tenant.phone_no,
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    )
+                  ],
+                )
+              ),
+            Container(
+                margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text("Address",
+                            style: TextStyle(color: primaryColor, fontSize: 15)),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(this.tenant.address !=null ? this.tenant.address : "Not Available" ,
+                            style: TextStyle(color: Colors.black, fontSize: 15)),
+                      ),
+                    )
+                  ],
+                )),
+            Container(
+                margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text("Gender",
+                            style: TextStyle(color: primaryColor, fontSize: 15)),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(this.tenant.gender !=null ? this.tenant.gender : "Not Available" ,
                             style: TextStyle(color: Colors.black, fontSize: 15)),
                       ),
                     )
@@ -143,13 +192,13 @@ class _SettingScreenState extends State<SettingScreen> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        child: Text("Nirvana Verified",
+                        child: Text(this.tenant.is_verified != null ? "Nirvana Verified" : "Verification needed",
                             style: TextStyle(color: primaryColor, fontSize: 12, fontStyle: FontStyle.italic, fontWeight: FontWeight.bold)),
                       ),
                     ),
                     Expanded(
                       flex: 1,
-                      child: this.tenant.is_verified != 0 ?
+                      child: this.tenant.is_verified != null ?
                         Icon(Icons.verified_user, color: primaryColor) :
                         Container()
                     )
@@ -192,22 +241,35 @@ class _SettingScreenState extends State<SettingScreen> {
             Container(
               margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
               alignment: Alignment.topLeft,
-              child: Text("Log Out",
-                  style: TextStyle(color: Colors.black, fontSize: 15)),
+              child: ListTile(
+                title: Text('Logout'),
+                onTap: () {
+                  LoginFunctions loginFunctions = new LoginFunctions();
+                  loginFunctions.signOut(context);
+                },
+              ),
             ),
             Container(
               margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
               alignment: Alignment.topLeft,
-              child: Text("Refer the App! ",
-                  style: TextStyle(color: Colors.black, fontSize: 15)),
+              child: ListTile(
+                title: Text('Refer the App !'),
+                onTap: () {
+
+                },
+              ),
             ),
             Padding(padding: EdgeInsets.all(8)),
             SettingsDivider(dividerTitle: "FEEDBACK"),
             Container(
               margin: EdgeInsets.only(left: 20, top: 10, right: 20, bottom: 10),
               alignment: Alignment.topLeft,
-              child: Text("Chat With Us",
-                  style: TextStyle(color: Colors.black, fontSize: 15)),
+              child: ListTile(
+                title: Text('Chat with us !'),
+                onTap: () {
+                  
+                },
+              ),
             ),
           ],
         ),

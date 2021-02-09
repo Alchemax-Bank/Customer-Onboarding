@@ -9,7 +9,8 @@ import 'package:Nirvana/Services/propertyList.dart';
 import 'package:Nirvana/models/Property.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:Nirvana/Screens/NotificationScreen.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -27,7 +28,6 @@ class _SearchScreenState extends State<SearchScreen> {
   int rating ;
   int price ;
   String type ;
-  String landmarks ;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
       "price": price,
       "type": type,
       "rating": rating,
-      "landmark": landmarks
+      "landmark": null
     };
     print(filter);
     List<Property> tmp = await getFilteredProperties(filter);
@@ -112,7 +112,13 @@ class _SearchScreenState extends State<SearchScreen> {
                             size: 24,
                             color: white,
                           ),
-                          onPressed: () => {},
+                          onPressed: () => {
+                            Navigator.pushReplacement(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.rightToLeftWithFade,
+                                  child: NotificationScreen()))
+                          },
                         ),
                       )
                     ),
@@ -307,34 +313,34 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ),
                                 ],
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text('Landmark: ', style: TextStyle(color: primaryColor,),),
-                                  DropdownButton<String>(
-                                    value: this.landmarks,
-                                    icon: Icon(Icons.arrow_drop_down),
-                                    iconSize: 24,
-                                    elevation: 16,
-                                    style: TextStyle(
-                                      color: grey
-                                    ),
-                                    onChanged: (String newValue) {
-                                      setState(() {
-                                        this.landmarks = newValue;
-                                      });
-                                    },
-                                    items: <String>[null, 'College', 'School', 'Industry', 'Office', 'Airport', 'Bus Depot', 'Railway', 'Metro', 'City Center']
-                                      .map<DropdownMenuItem<String>>((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value == null ? "Select Landmark" : value),
-                                        );
-                                      })
-                                      .toList(),
-                                  ),
-                                ],
-                              ),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //   children: <Widget>[
+                              //     Text('Landmark: ', style: TextStyle(color: primaryColor,),),
+                              //     DropdownButton<String>(
+                              //       value: this.landmarks,
+                              //       icon: Icon(Icons.arrow_drop_down),
+                              //       iconSize: 24,
+                              //       elevation: 16,
+                              //       style: TextStyle(
+                              //         color: grey
+                              //       ),
+                              //       onChanged: (String newValue) {
+                              //         setState(() {
+                              //           this.landmarks = newValue;
+                              //         });
+                              //       },
+                              //       items: <String>[null, 'College', 'School', 'Industry', 'Office', 'Airport', 'Bus Depot', 'Railway', 'Metro', 'City Center']
+                              //         .map<DropdownMenuItem<String>>((String value) {
+                              //           return DropdownMenuItem<String>(
+                              //             value: value,
+                              //             child: Text(value == null ? "Select Landmark" : value),
+                              //           );
+                              //         })
+                              //         .toList(),
+                              //     ),
+                              //   ],
+                              // ),
                             ],
                           ),
                         ),
@@ -533,7 +539,7 @@ class _SearchScreenState extends State<SearchScreen> {
       });
     }
   }
-  void _launchMapsUrl(double lat, double lon) async {
+  void _launchMapsUrl(String lat, String lon) async {
     // var latitude = origin['latitude'];
     // var longitude = origin['longitude'];
     

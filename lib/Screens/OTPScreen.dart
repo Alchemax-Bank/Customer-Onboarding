@@ -1,7 +1,9 @@
 import 'package:Nirvana/Services/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:Nirvana/constants.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:quiver/async.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class OTPScreen extends StatefulWidget {
   OTPScreen({@required this.mobileNo, this.mode});
@@ -19,6 +21,7 @@ class _OTPScreenState extends State<OTPScreen> {
   int _start = 30;
   int _current = 30;
   String mode;
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
 
   _OTPScreenState(String mobileno, String mode){
     this.mobileno = "+91" + mobileno;
@@ -147,15 +150,10 @@ class _OTPScreenState extends State<OTPScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
                         height: 45,
-                        child: RaisedButton(
-                          // padding: EdgeInsets.only(bottom: 10),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(35.0)),
-                          onPressed: () {
-                            loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode);
-                          },
-                          color: primaryColor,
-                          child: RichText(
+                        child: RoundedLoadingButton(
+                            color: primaryColor,
+                            controller: _btnController,
+                            child: RichText(
                             text: TextSpan(children: <TextSpan>[
                               TextSpan(
                                   text: "Get In",
@@ -166,6 +164,9 @@ class _OTPScreenState extends State<OTPScreen> {
                                       fontWeight: FontWeight.bold)),
                             ]),
                           ),
+                            onPressed: () {
+                              loginFunctions.verifyOTP(errorMessage, context, smsOTP, mobileno, mode).then((value) => _btnController.success());  
+                          },
                         ),
                       ),
                     ),
@@ -224,7 +225,7 @@ class _OTPScreenState extends State<OTPScreen> {
                               initState();
                             },
                             child: Text(
-                              "Resend in $_start",
+                              "Resend ",
                               style: TextStyle(
                                   color: primaryColor,
                                   fontWeight: FontWeight.bold),

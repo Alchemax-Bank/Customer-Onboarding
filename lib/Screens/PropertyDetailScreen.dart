@@ -15,6 +15,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:Nirvana/Services/propertyList.dart';
 
 class PropertyDetailScreen extends StatefulWidget {
   final Property propertyDetail;
@@ -26,7 +27,8 @@ class PropertyDetailScreen extends StatefulWidget {
 class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   Tenant tenant;
-  
+  Property property;
+
   @override
   void initState() {
     super.initState();
@@ -37,20 +39,18 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
     checkBooking();
   }
 
-
-  Booking booking;
-
   Future checkBooking() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var mobile = prefs.getString("mobile");
     Tenant tmp = await getTenantProfile(mobile);
-    Booking book = await getCurrentBooking(tmp.id);
+    Property prop;
+    if (tmp.property_id != null)
+      prop = await getProperty(tmp.property_id);
 
     setState(() {
       tenant = tmp;
-      booking = book;
+      property = prop;
     });
-
   }
 
   @override
@@ -66,7 +66,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
           color: white,
         ),
         onPressed: () { 
-          if (booking == null)
+          if (property == null)
             Navigator.pushReplacement(
             context,
             PageTransition(
@@ -285,7 +285,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                     FlatButton(
                       child : Text("Call", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
                       onPressed: (){
-                        launch("tel://8518076044");
+                        launch("tel:8518076044");
                       },
                       color: primaryColor,
                     )
@@ -338,21 +338,21 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Icon(Icons.wifi, color:  primaryColor,),
+                            Icon(Icons.view_agenda, color:  primaryColor,),
                             SizedBox(width: 4,),
                             Text("Balcony", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                           ],
                         ),
                         Row(
                           children: <Widget>[
-                            Icon(Icons.local_offer, color:  primaryColor,),
+                            Icon(Icons.upgrade, color:  primaryColor,),
                             SizedBox(width: 4,),
                             Text("Lift", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                           ],
                         ),
                         Row(
                           children: <Widget>[
-                            Icon(Icons.videogame_asset, color:  primaryColor,),
+                            Icon(Icons.electrical_services, color:  primaryColor,),
                             SizedBox(width: 4,),
                             Text("Electricity \n Backup", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                           ],
@@ -369,7 +369,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       ),
     );
   }
-  void _launchMapsUrl(double lat, double lon) async {
+  void _launchMapsUrl(String lat, String lon) async {
     // var latitude = origin['latitude'];
     // var longitude = origin['longitude'];
     

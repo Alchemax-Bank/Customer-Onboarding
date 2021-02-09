@@ -1,6 +1,7 @@
 import 'package:Nirvana/Widget/Cards.dart';
 import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/Screens/Drawer.dart';
+import 'package:Nirvana/Screens/NotificationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -9,6 +10,7 @@ import 'package:location/location.dart';
 import 'package:geocoding/geocoding.dart' as Coding;
 import 'package:Nirvana/Services/propertyList.dart';
 import 'package:Nirvana/models/Property.dart';
+import 'package:page_transition/page_transition.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -126,7 +128,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           size: 24,
                           color: white,
                         ),
-                        onPressed: () => {},
+                        onPressed: () => {
+                          Navigator.pushReplacement(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.rightToLeftWithFade,
+                              child: NotificationScreen()))
+                        },
                       ),
                     )),
               ),

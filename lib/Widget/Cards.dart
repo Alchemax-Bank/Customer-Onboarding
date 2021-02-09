@@ -33,7 +33,7 @@ class PropertyIntroCard extends StatelessWidget {
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
           ),
           Text(
-            this.property.description != null ? this.property.description.toString().substring(0,20) + ' ...' : "No Description",
+            this.property.description != "None"  ? this.property.description.toString().substring(0,20) + ' ...' : "No Description",
             style: TextStyle(color: grey, height: 1.5, fontSize: 9),
           ),
           Text(
@@ -271,7 +271,7 @@ class PropertyCard1 extends StatelessWidget {
                 ],
               ),
               Text(
-                this.property.description != null ? 
+                this.property.description != "None"  ? 
                   this.property.description.substring(0,40) + ' ...' :
                   "No Description",
                 style: prefix0.TextStyle(
@@ -296,10 +296,10 @@ class PropertyCard1 extends StatelessWidget {
                     children: <Widget>[
                       Icon(Icons.money, color:  primaryColor,),
                       SizedBox(width: 4,),
-                      Text(this.property.price.toString(), style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
+                      Text("₹ " + this.property.price.toString(), style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                     ],
                   ),
-                  SizedBox(width: 20,),
+                  SizedBox(width: 17,),
                   Column(
                     children: <Widget>[
                       Icon(Icons.king_bed, color:  primaryColor,),
@@ -307,7 +307,7 @@ class PropertyCard1 extends StatelessWidget {
                       Text(this.property.numberOfRooms.toString() + ' bed', style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                     ],
                   ),
-                  SizedBox(width: 20,),
+                  SizedBox(width: 17,),
                   Column(
                     children: <Widget>[
                       Icon(Icons.bathtub, color:  primaryColor,),
@@ -340,7 +340,7 @@ class PropertyCard1 extends StatelessWidget {
       ),
     );
   }
-  void _launchMapsUrl(double lat, double lon) async {
+  void _launchMapsUrl(String lat, String lon) async {
     // var latitude = origin['latitude'];
     // var longitude = origin['longitude'];
     

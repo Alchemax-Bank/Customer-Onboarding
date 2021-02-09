@@ -5,7 +5,6 @@ class Property{
   var name;
   var bhk;
   var type;
-  var floor;
   var description;
   var latitude;
   var longitude;
@@ -41,7 +40,6 @@ class Property{
     this.name,
     this.bhk,
     this.type,
-    this.floor,
     this.description,
     this.latitude,
     this.longitude,

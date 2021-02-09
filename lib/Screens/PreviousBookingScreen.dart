@@ -191,14 +191,14 @@ class _PreviousBookingScreenState extends State<PreviousBookingScreen> {
                                 children: <Widget>[
                                   Icon(Icons.calendar_today, size: 12, color: Colors.grey[600],),
                                   SizedBox(width: 4,),
-                                  Text("Check in: " + HttpDate.parse(booking[index].check_in).toString().split(" ")[0], style: TextStyle(color: Colors.grey[600]),)
+                                  Text("Check in: " + booking[index].check_in, style: TextStyle(color: Colors.grey[600]),)
                                 ],
                               ),
                               Row(
                                 children: <Widget>[
                                   Icon(Icons.calendar_today, size: 12, color: Colors.grey[600],),
                                   SizedBox(width: 4,),
-                                  Text("Check out: " + HttpDate.parse(booking[index].check_out).toString().split(" ")[0], style: TextStyle(color: Colors.grey[600]),)
+                                  Text("Check out: " + booking[index].check_out, style: TextStyle(color: Colors.grey[600]),)
                                 ],
                               ),
                             ],
@@ -230,7 +230,7 @@ class _PreviousBookingScreenState extends State<PreviousBookingScreen> {
       ),
     );
   }
-  void _launchMapsUrl(double lat, double lon) async {
+  void _launchMapsUrl(String lat, String lon) async {
     // var latitude = origin['latitude'];
     // var longitude = origin['longitude'];
     

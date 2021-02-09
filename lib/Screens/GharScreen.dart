@@ -13,6 +13,8 @@ import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:Nirvana/Screens/NotificationScreen.dart';
+import 'package:page_transition/page_transition.dart';
 
 class GharScreen extends StatefulWidget {
   @override
@@ -34,21 +36,16 @@ class _GharScreenState extends State<GharScreen> {
     checkBooking();
   }
 
-
-  Booking booking;
-
   Future checkBooking() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var mobile = prefs.getString("mobile");
     Tenant tmp = await getTenantProfile(mobile);
-    Booking book = await getCurrentBooking(tmp.id);
     Property prop;
-    if (book != null)
-      prop = await getProperty(book.property_id);
+    if (tmp.property_id != null)
+      prop = await getProperty(tmp.property_id);
 
     setState(() {
       tenant = tmp;
-      booking = book;
       property = prop;
     });
 
@@ -106,13 +103,19 @@ class _GharScreenState extends State<GharScreen> {
                               size: 24,
                               color: white,
                             ),
-                            onPressed: () => {},
+                            onPressed: () => {
+                              Navigator.pushReplacement(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.rightToLeftWithFade,
+                                  child: NotificationScreen()))
+                            },
                           ),
                         )
                       ),
                 ),
               ),
-              booking == null ? Container() : Container(
+              property == null ? Container() : Container(
                 height: 260,
                 color: Colors.transparent,
                 margin: EdgeInsets.only(top: 90),
@@ -139,7 +142,7 @@ class _GharScreenState extends State<GharScreen> {
             ],
           ),
           SizedBox(height: 20,),
-          booking == null ? Container(
+          property == null ? Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.4,
             decoration: BoxDecoration(
@@ -156,7 +159,7 @@ class _GharScreenState extends State<GharScreen> {
                       style: TextStyle(
                           color: primaryColor,
                           fontSize: 14.0,
-                          fontWeight: FontWeight.w400))),
+                          fontWeight: FontWeight.w600))),
             ])
             ) : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +277,7 @@ class _GharScreenState extends State<GharScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(property.landlord_name, style: TextStyle(color: Colors.grey[800], fontSize : 18, fontWeight: FontWeight.w600),),
-                          Text(property.landlord_type, style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
+                          Text("AGENT", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),),
                           Text(property.landlord_rating.toString() + " ⭐", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w400),)
                         ],
                       ),
@@ -283,7 +286,7 @@ class _GharScreenState extends State<GharScreen> {
                     FlatButton(
                       child : Text("Call", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
                       onPressed: (){
-                        launch("tel://8518076044");
+                        launch("tel:8518076044");
                       },
                       color: primaryColor,
                     )
@@ -336,21 +339,21 @@ class _GharScreenState extends State<GharScreen> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Icon(Icons.wifi, color:  primaryColor,),
+                            Icon(Icons.view_agenda, color:  primaryColor,),
                             SizedBox(width: 4,),
                             Text("Balcony", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                           ],
                         ),
                         Row(
                           children: <Widget>[
-                            Icon(Icons.local_offer, color:  primaryColor,),
+                            Icon(Icons.upgrade, color:  primaryColor,),
                             SizedBox(width: 4,),
                             Text("Lift", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                           ],
                         ),
                         Row(
                           children: <Widget>[
-                            Icon(Icons.videogame_asset, color:  primaryColor,),
+                            Icon(Icons.electrical_services, color:  primaryColor,),
                             SizedBox(width: 4,),
                             Text("Electricity \n Backup", style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),)
                           ],
@@ -370,7 +373,7 @@ class _GharScreenState extends State<GharScreen> {
           ),
     );
   }
-  void _launchMapsUrl(double lat, double lon) async {
+  void _launchMapsUrl(String lat, String lon) async {
     // var latitude = origin['latitude'];
     // var longitude = origin['longitude'];
     

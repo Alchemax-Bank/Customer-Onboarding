@@ -121,10 +121,10 @@ class LoginFunctions{
     var lastName = prefs.getString("lastName");
 
     final tenant = {
-      "username": firstName + " " + lastName,
-      "phone_no": currentUser.phoneNumber.substring(3),
-      'firebase_id': currentUser.uid,
-      'device_token': tokenId
+      "username"    : firstName + " " + lastName,
+      "phoneNo"     : currentUser.phoneNumber.substring(3),
+      'firebaseId'  : currentUser.uid,
+      'deviceToken' : tokenId 
     };
 
     await prefs.setString("firebase_id", currentUser.uid);
@@ -133,10 +133,20 @@ class LoginFunctions{
     
     Response response = await post(Uri.encodeFull(url), body: json.encode(tenant), headers: {"Content-Type": "application/json"});
     print(response.body);
+    
     bool status = jsonDecode(response.body)["status"];
     if (status == true){
       await prefs.setBool('login', true);
       await prefs.setString('mobile', currentUser.phoneNumber.substring(3));
+      Fluttertoast.showToast(
+        msg: "Go to Settings, and update account!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM, 
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[200],
+        textColor: Colors.red,
+        fontSize: 12.0
+      );
       Navigator.push(context, MaterialPageRoute(builder: (context) => Home(index: 0,)));
     }
   }

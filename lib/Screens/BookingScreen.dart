@@ -7,6 +7,7 @@ import 'package:Nirvana/constants.dart';
 import 'package:Nirvana/models/Property.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,6 +20,8 @@ class BookingScreen extends StatefulWidget {
 
 class _BookingScreenState extends State<BookingScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final RoundedLoadingButtonController _btnController = new RoundedLoadingButtonController();
+
   bool booking = false;
   @override
   void initState() {
@@ -31,7 +34,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   DateTime check_in = DateTime.now();
-  DateTime check_out = DateTime.now();
+  DateTime check_out = DateTime.now().add(Duration(days: 30));
 
   Future<void> _selectCheckInDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -47,8 +50,8 @@ class _BookingScreenState extends State<BookingScreen> {
   Future<void> _selectCheckOutDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: check_in,
-        firstDate: check_in,
+        initialDate: check_in.add(Duration(days: 30)),
+        firstDate: check_in.add(Duration(days: 30)),
         lastDate: DateTime(2101,8));
     if (picked != null && picked != check_out)
       setState(() {
@@ -160,7 +163,7 @@ class _BookingScreenState extends State<BookingScreen> {
                           style: TextStyle(color: Colors.grey[500],), overflow: TextOverflow.ellipsis),
                         SizedBox(height: 16,),
 
-                        Text(widget.propertyDetail.price.toString() + " Rs/ month",
+                        Text("₹ " + widget.propertyDetail.price.toString() + " / month",
                             style: TextStyle(fontSize: 18,color: primaryColor, fontWeight: FontWeight.bold), ),
                         SizedBox(height: 8,),
 
@@ -261,7 +264,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     FlatButton(
                       child : Text("Call", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),),
                       onPressed: (){
-                        launch("tel://8518076044");
+                        launch("tel:8518076044");
                       },
                       color: primaryColor,
                     )
@@ -321,60 +324,34 @@ class _BookingScreenState extends State<BookingScreen> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   margin: EdgeInsets.only(left: 32, right: 32),
-                  child: FlatButton(
-                    child : Text("Book", style: TextStyle(color: Colors.grey[100], fontSize: 16, fontWeight: FontWeight.w600), ),
+                  child: RoundedLoadingButton(
+                    controller: _btnController, 
+                    child : RichText(
+                      text: TextSpan(children: <TextSpan>[
+                        TextSpan(
+                            text: "Book Now!",
+                            style: TextStyle(
+                                color: white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400)),
+                      ]),
+                    ),
                     onPressed: () async {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Proceed with booking ? ",
-                              style: TextStyle(
-                                color: primaryColor
-                              ),
-                            ),
-                            content: Text("Should we continue with booking ..."),
-                            actions: [
-                              FlatButton(
-                                child: Text("Cancel",
-                                  style: TextStyle(
-                                    color: Colors.red
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              FlatButton(
-                                child: Text("OK",
-                                  style: TextStyle(
-                                    color: primaryColor
-                                  ),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    booking = true;
-                                  });
-                                },
-                              )
-                            ],
-                          );
-                        }
-                      );       
-                      if (booking){ 
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         var tenant_id = prefs.getInt("tenant_id");
                         var info = {
-                          "property_id" : widget.propertyDetail.index,
-                          "tenant_id": tenant_id,
-                          "check_in": check_in.toLocal().toString().split(' ')[0],
-                          "check_out": check_out.toLocal().toString().split(' ')[0],
+                          "propertyId" : widget.propertyDetail.index,
+                          "tenantId": tenant_id,
+                          "checkIn": check_in.toLocal().toString().split(' ')[0],
+                          "checkOut": check_out.toLocal().toString().split(' ')[0],
                         };
+                        print(info);
                         var book = await bookAProperty(info);
-
-                        if (book!= null){
+                        print(book);
+                        if (book){
                           await prefs.setBool("booking", true);
                           print(book);
+                          _btnController.success();
                           Fluttertoast.showToast(
                               msg: "Property Booked",
                               toastLength: Toast.LENGTH_SHORT,
@@ -390,9 +367,8 @@ class _BookingScreenState extends State<BookingScreen> {
                                 type: PageTransitionType.rightToLeftWithFade,
                                 child: Home(index: 0)));
                         }
-                      }
-                    },
-                    color: primaryColor,
+                      },
+                    color: Colors.redAccent,
                   )
                 )
               ),
@@ -403,7 +379,7 @@ class _BookingScreenState extends State<BookingScreen> {
       ),
     );
   }
-  void _launchMapsUrl(double lat, double lon) async {
+  void _launchMapsUrl(String lat, String lon) async {
     // var latitude = origin['latitude'];
     // var longitude = origin['longitude'];
     

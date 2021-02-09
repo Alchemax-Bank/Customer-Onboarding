@@ -1,7 +1,4 @@
-import 'package:Nirvana/Screens/GharScreen.dart';
 import 'package:Nirvana/Screens/PreviousBookingScreen.dart';
-import 'package:Nirvana/Screens/SearchScreen.dart';
-import 'package:Nirvana/Screens/SettingScreen.dart';
 import 'package:Nirvana/Services/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:Nirvana/constants.dart';
